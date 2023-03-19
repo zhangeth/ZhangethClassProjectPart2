@@ -5,7 +5,7 @@ OUTDIR=out
 
 SOURCEDIR=src
 
-sources = $(wildcard $(SOURCEDIR)/**/StatusCode.java $(SOURCEDIR)/**/models/*.java $(SOURCEDIR)/**/FDBHelper.java $(SOURCEDIR)/**/TableManager.java $(SOURCEDIR)/**/TableManagerImpl.java $(SOURCEDIR)/**/Cursor.java $(SOURCEDIR)/**/Records.java $(SOURCEDIR)/**/RecordsImpl.java
+sources = $(wildcard $(SOURCEDIR)/**/StatusCode.java $(SOURCEDIR)/**/models/*.java $(SOURCEDIR)/**/FDBHelper.java $(SOURCEDIR)/**/TableManager.java $(SOURCEDIR)/**/TableManagerImpl.java $(SOURCEDIR)/**/Cursor.java $(SOURCEDIR)/**/Records.java $(SOURCEDIR)/**/RecordsImpl.java $(SOURCEDIR)/**/test/*.java)
 classes = $(sources:.java=.class)
 
 preparation: clean
