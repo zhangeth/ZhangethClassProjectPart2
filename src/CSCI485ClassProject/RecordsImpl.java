@@ -1,7 +1,9 @@
 package CSCI485ClassProject;
 
+import CSCI485ClassProject.models.AttributeType;
 import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.Record;
+import CSCI485ClassProject.models.TableMetadata;
 import com.apple.foundationdb.Database;
 import com.apple.foundationdb.FDB;
 import com.apple.foundationdb.Transaction;
@@ -10,10 +12,10 @@ import com.apple.foundationdb.directory.Directory;
 import com.apple.foundationdb.directory.DirectoryLayer;
 import com.apple.foundationdb.directory.DirectorySubspace;
 import com.apple.foundationdb.tuple.Tuple;
+import jdk.net.SocketFlow;
 
 import java.awt.image.AreaAveragingScaleFilter;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 public class RecordsImpl implements Records{
@@ -28,65 +30,66 @@ public class RecordsImpl implements Records{
 
   @Override
   public StatusCode insertRecord(String tableName, String[] primaryKeys, Object[] primaryKeysValues, String[] attrNames, Object[] attrValues) {
+
     Transaction tx = FDBHelper.openTransaction(db);
 
+    // check parameters
     List<String> tableSubdirectory = new ArrayList<>();
     tableSubdirectory.add(tableName);
 
     if (!FDBHelper.doesSubdirectoryExists(tx, tableSubdirectory))
       return StatusCode.TABLE_NOT_FOUND;
 
-    // check parameters
-    if (primaryKeysValues.length != primaryKeys.length || attrNames.length != attrValues.length)
-      return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
+    // get tableMetaData
+    TableMetadata tbm = RecordsHelper.convertNameToTableMetaData(db, tx, tableName);
 
-    // get meta data
-    TableMetadataTransformer transformer = new TableMetadataTransformer(tableName);
-    DirectorySubspace tableAttrSpace = FDBHelper.createOrOpenSubspace(tx, transformer.getTableAttributeStorePath());
-
-    List<String> tblAttributeDirPath = transformer.getTableAttributeStorePath();
-
-    // read data and see if it matches what's given
-    Transaction readTX = db.createTransaction();
-
-    List<FDBKVPair> kvPairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTX, tblAttributeDirPath);
-
-    for (FDBKVPair pair : kvPairs)
-    {
-      System.out.print("pair key: " + pair.getKey().toString());
-      System.out.println(" value : " + pair.getValue().toString());
+    // compare primaryKeys
+    if (primaryKeys.length != primaryKeysValues.length || !RecordsHelper.arePrimaryKeysValid(primaryKeys, tbm)) {
+      return StatusCode.DATA_RECORD_PRIMARY_KEYS_UNMATCHED;
     }
 
-    readTX.close();
+    // compare attributes
+    if (attrNames.length != attrValues.length || !RecordsHelper.areAttributesValid(attrNames, tbm)) {
+      return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
+    }
 
-    // create records subdir under tablename
+    // compare attribute types
+    HashMap<String, AttributeType> attrMap = tbm.getAttributes();
+
+    for (int i = 0; i < attrNames.length; i++)
+    {
+      AttributeType attrType = attrMap.get(attrNames[i]);
+      if (    !(attrType == AttributeType.INT && attrValues[i] instanceof Integer) ||
+              !(attrType == AttributeType.VARCHAR && attrValues[i] instanceof String) ||
+              !(attrType == AttributeType.DOUBLE && attrValues[i] instanceof Double)
+          )
+      {
+        return StatusCode.DATA_RECORD_CREATION_ATTRIBUTE_TYPE_UNMATCHED;
+      }
+    }
+
+    // start creating record: make records subdir under table dir
     Transaction createTX = db.createTransaction();
-    // check table metadata
+
     List<String> recordsPath = new ArrayList<>();
     recordsPath.add(tableName); recordsPath.add("records");
 
     DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
 
-    // make record
+    // make key Tuple
     Tuple keyTuple = new Tuple();
-    // make key value pair Tuple
-    for (int i = 0 ; i < primaryKeysValues.length; i++)
-    {
-      keyTuple.addObject(primaryKeysValues[i]);
-      System.out.println(primaryKeysValues[i] + ": pkeyValue");
-    }
+    for (Object key : primaryKeysValues)
+      keyTuple.addObject(key);
 
+    // make value Tuple
     Tuple valueTuple = new Tuple();
+    for (Object value : attrValues)
+      valueTuple.addObject(value);
 
-    for (int i = 0; i < attrValues.length; i++)
-    {
-      valueTuple.addObject(attrValues[i]);
-      System.out.println(attrValues[i] + ": valueValue");
-    }
-
+    // commit key and value tuples to db
     FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, keyTuple, valueTuple));
-    createTX.commit().join();
-    createTX.close();
+    int counter = 0;
+    FDBHelper.tryCommitTx(createTX, 0);
 
     // print
     Transaction t = db.createTransaction();
@@ -106,7 +109,7 @@ public class RecordsImpl implements Records{
 
     // collect all into key value record to add to the subdirectory
 
-    return null;
+    return StatusCode.SUCCESS;
   }
 
   @Override

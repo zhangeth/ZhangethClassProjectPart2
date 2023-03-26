@@ -62,6 +62,21 @@ public class FDBHelper {
 
     return res;
   }
+  // get primary keys
+  public static List<FDBKVPair> getPrimaryKeysofSubdirectory(Database db, Transaction tx, List<String> tablePath){
+    List<FDBKVPair> res = getAllKeyValuePairsOfSubdirectory(db, tx, tablePath);
+    //TableMetadataTransformer transformer = new TableMetadataTransformer(tableName);
+    //DirectorySubspace tableAttrSpace = FDBHelper.createOrOpenSubspace(tx, transformer.getTableAttributeStorePath());
+    if (res.isEmpty()){
+      System.out.println("Empty subdir when attempting getPrimaryKeysofSubdirectory");
+    }
+
+    for (FDBKVPair pair : res)
+    {
+      // unpack th
+    }
+    return res;
+  }
 
   public static FDBKVPair getCertainKeyValuePairInSubdirectory(DirectorySubspace dir, Transaction tx, Tuple keyTuple, List<String> path) {
     if (dir == null) {
