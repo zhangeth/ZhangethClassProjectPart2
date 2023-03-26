@@ -85,6 +85,8 @@ public class RecordsImpl implements Records{
       System.out.println(attrValues[i] + ": valueValue");
     }
     FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, primaryTuple, valueTuple));
+    createTX.commit().join();
+    createTX.close();
 
     // print
     Transaction t = db.createTransaction();
