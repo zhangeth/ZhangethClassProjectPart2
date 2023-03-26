@@ -49,7 +49,7 @@ public class RecordsImpl implements Records{
     }
 
     // compare attributes
-    if (attrNames.length != attrValues.length || !RecordsHelper.areAttributesValid(attrNames, tbm)) {
+    if (attrNames.length != attrValues.length ) {
       System.out.println(attrNames.toString());
       System.out.println(attrValues.length + " values length, " + attrNames.length + " names length");
       return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
@@ -69,6 +69,11 @@ public class RecordsImpl implements Records{
         FDBHelper.abortTransaction(tx);
         return StatusCode.DATA_RECORD_CREATION_ATTRIBUTE_TYPE_UNMATCHED;
       }
+    }
+
+    if (!RecordsHelper.areAttributesValid(attrNames, tbm))
+    {
+      return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
     }
 
     // start creating record: make records subdir under table dir
