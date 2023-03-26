@@ -45,7 +45,7 @@ public class RecordsImpl implements Records{
 
     List<String> tblAttributeDirPath = transformer.getTableAttributeStorePath();
 
-
+    System.out.println(tblAttributeDirPath.toString());
 
     // sample read
     Transaction readTX = db.createTransaction();
@@ -65,7 +65,6 @@ public class RecordsImpl implements Records{
     List<String> recordsPath = new ArrayList<>();
     recordsPath.add(tableName);
     recordsPath.add("records");
-
 
 
     DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
