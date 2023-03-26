@@ -85,12 +85,12 @@ public class RecordsImpl implements Records{
     for (int i = 0; i < attrValues.length; i++)
     {
       valueTuple.addObject(attrValues[i]);
+      System.out.println(attrValues[i] + ": valueValue");
     }
 
     newPair.set(recordSubspace.pack(primaryTuple), valueTuple.pack());
     // open subdirectory records
     newPair.commit().join();
-    newPair.close();
 
     // print
     Transaction t = db.createTransaction();
