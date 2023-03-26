@@ -99,15 +99,11 @@ public class RecordsImpl implements Records{
       keyTuple.addObject(primaryKeysValues[i]);
 
     try {
-      Object value = Tuple.fromBytes(t.get(recordSubspace.pack(keyTuple)).get());
-      System.out.println("Object: " + value.toString());
-      for (FDBKVPair p : FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath))
-        System.out.println(p.getValue() + " Yes");
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    } catch (ExecutionException e) {
-      throw new RuntimeException(e);
+      FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath);
+    }  catch (Exception e) {
+      System.out.println(e);
     }
+
     t.close();
 
     // collect all into key value record to add to the subdirectory
