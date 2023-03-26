@@ -77,6 +77,7 @@ public class RecordsImpl implements Records{
     for (int i = 0 ; i < primaryKeysValues.length; i++)
     {
       primaryTuple.addObject(primaryKeysValues[i]);
+      System.out.println(primaryKeysValues[i] + ": pkeyValue");
     }
 
     Tuple valueTuple = new Tuple();
