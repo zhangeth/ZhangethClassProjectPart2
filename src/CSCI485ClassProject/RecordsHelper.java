@@ -27,7 +27,17 @@ public class RecordsHelper {
     {
         Set<String> attrSet = new HashSet<>(Arrays.asList(attrNames));
         Set<String> tbmAttrSet = new HashSet<>(tbm.getAttributes().keySet());
+        System.out.println("attr Name set");
+        for (String s : attrNames)
+        {
+            System.out.println(s);
+        }
+        System.out.println();
 
+        for (String s : tbm.getAttributes().keySet())
+        {
+            System.out.println(s);
+        }
         // compare content of sets
         if (!attrSet.equals(tbmAttrSet)){
             return false;
