@@ -41,13 +41,12 @@ public class RecordsImpl implements Records{
     TableMetadataTransformer transformer = new TableMetadataTransformer(tableName);
     DirectorySubspace tableAttrSpace = FDBHelper.createOrOpenSubspace(tx, transformer.getTableAttributeStorePath());
 
-    DirectorySubspace tableDir = FDBHelper.openSubspace(tx, tableSubdirectory);
     List<String> tblAttributeDirPath = transformer.getTableAttributeStorePath();
 
-    Transaction trans = FDBHelper.openTransaction(db);
-    FDBKVPair pair = FDBHelper.getCertainKeyValuePairInSubdirectory(tableAttrSpace, trans, TableMetadataTransformer.getTableAttributeKeyTuple("name"), tblAttributeDirPath);
+    //Transaction trans = FDBHelper.openTransaction(db);
+    //FDBKVPair pair = FDBHelper.getCertainKeyValuePairInSubdirectory(tableAttrSpace, trans, TableMetadataTransformer.getTableAttributeKeyTuple("name"), tblAttributeDirPath);
 
-    System.out.println("pair: " + pair.toString());
+    System.out.println("pair: " + tblAttributeDirPath.toString());
 
 
     // check table metadata
