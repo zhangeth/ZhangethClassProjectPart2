@@ -5,6 +5,7 @@ import CSCI485ClassProject.models.Record;
 import com.apple.foundationdb.Database;
 import com.apple.foundationdb.FDB;
 import com.apple.foundationdb.Transaction;
+import com.apple.foundationdb.TransactionContext;
 import com.apple.foundationdb.directory.Directory;
 import com.apple.foundationdb.directory.DirectorySubspace;
 import com.apple.foundationdb.tuple.Tuple;
@@ -43,12 +44,9 @@ public class RecordsImpl implements Records{
 
     List<String> tblAttributeDirPath = transformer.getTableAttributeStorePath();
 
-    //Transaction trans = FDBHelper.openTransaction(db);
-    //FDBKVPair pair = FDBHelper.getCertainKeyValuePairInSubdirectory(tableAttrSpace, trans, TableMetadataTransformer.getTableAttributeKeyTuple("name"), tblAttributeDirPath);
-    Tuple key = new Tuple();
+
     // sample read
     Transaction readTX = db.createTransaction();
-    String name = "name";
 
     List<FDBKVPair> kvPairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTX, tblAttributeDirPath);
 
@@ -58,29 +56,46 @@ public class RecordsImpl implements Records{
       System.out.println(" value : " + pair.getValue().toString());
     }
 
+    readTX.close();
 
-
+    Transaction createTX = db.createTransaction();
     // check table metadata
+    List<String> recordsPath = new ArrayList<>();
+    recordsPath.add(tableName);
+    recordsPath.add("records");
 
-    // open subdirectory
+    DirectorySubspace recordSubspace = FDBHelper.createOrOpenSubspace(createTX, recordsPath);
 
-
-    // make key value pairs for each primary key value in the, from the values
-
-    //FDBKVPair entry = new FDBKVPair()
+    // make record
     Tuple primaryTuple = new Tuple();
     // make key value pair Tuple
     for (int i = 0 ; i < primaryKeysValues.length; i++)
     {
       primaryTuple.addObject(primaryKeysValues[i]);
     }
-    
+
     Tuple valueTuple = new Tuple();
-    
+
     for (int i = 0; i < attrValues.length; i++)
     {
       valueTuple.addObject(attrValues[i]);
     }
+    createTX.set(recordSubspace.pack(primaryTuple), valueTuple.pack());
+    // open subdirectory records
+    createTX.commit();
+    createTX.close();
+
+    // print
+    Transaction t = db.createTransaction();
+    List<FDBKVPair> newPairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath);
+
+    for (FDBKVPair pair : newPairs)
+    {
+      System.out.print("pair key: " + pair.getKey().toString());
+      System.out.println(" value : " + pair.getValue().toString());
+    }
+    t.close();
+
 
 
     // make key value  pair for each attribute
