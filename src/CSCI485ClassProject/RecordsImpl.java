@@ -61,6 +61,7 @@ public class RecordsImpl implements Records{
 
     readTX.close();
 
+    // create records subdir under tablename
     Transaction createTX = db.createTransaction();
     // check table metadata
     List<String> recordsPath = new ArrayList<>();
@@ -68,9 +69,7 @@ public class RecordsImpl implements Records{
     recordsPath.add("records");
 
     DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
-    createTX.commit().join();
 
-    Transaction newPair = db.createTransaction();
     // make record
     Tuple primaryTuple = new Tuple();
     // make key value pair Tuple
@@ -88,9 +87,10 @@ public class RecordsImpl implements Records{
       System.out.println(attrValues[i] + ": valueValue");
     }
 
-    newPair.set(recordSubspace.pack(primaryTuple), valueTuple.pack());
+    createTX.set(recordSubspace.pack(primaryTuple), valueTuple.pack());
     // open subdirectory records
-    newPair.commit().join();
+    createTX.commit().join();
+    createTX.close();
 
     // print
     Transaction t = db.createTransaction();
