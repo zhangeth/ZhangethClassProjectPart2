@@ -84,6 +84,7 @@ public class RecordsImpl implements Records{
     {
       valueTuple.addObject(attrValues[i]);
     }
+
     newPair.set(recordSubspace.pack(primaryTuple), valueTuple.pack());
     // open subdirectory records
     newPair.commit().join();
@@ -100,8 +101,6 @@ public class RecordsImpl implements Records{
       System.out.println(" value : " + pair.getValue().toString());
     }
     t.close();
-
-    // make key value  pair for each attribute
 
     // collect all into key value record to add to the subdirectory
 
