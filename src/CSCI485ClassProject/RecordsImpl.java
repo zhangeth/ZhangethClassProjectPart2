@@ -105,6 +105,8 @@ public class RecordsImpl implements Records{
     try {
       Object value = Tuple.fromBytes(t.get(recordSubspace.pack(keyTuple)).get());
       System.out.println("Object: " + value.toString());
+      for (FDBKVPair p : FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath))
+        System.out.println(p.getValue() + " Yes");
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     } catch (ExecutionException e) {
