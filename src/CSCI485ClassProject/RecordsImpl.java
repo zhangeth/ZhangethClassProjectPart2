@@ -7,6 +7,7 @@ import com.apple.foundationdb.FDB;
 import com.apple.foundationdb.Transaction;
 import com.apple.foundationdb.TransactionContext;
 import com.apple.foundationdb.directory.Directory;
+import com.apple.foundationdb.directory.DirectoryLayer;
 import com.apple.foundationdb.directory.DirectorySubspace;
 import com.apple.foundationdb.tuple.Tuple;
 
@@ -45,6 +46,7 @@ public class RecordsImpl implements Records{
     List<String> tblAttributeDirPath = transformer.getTableAttributeStorePath();
 
 
+
     // sample read
     Transaction readTX = db.createTransaction();
 
@@ -64,7 +66,9 @@ public class RecordsImpl implements Records{
     recordsPath.add(tableName);
     recordsPath.add("records");
 
-    DirectorySubspace recordSubspace = FDBHelper.createOrOpenSubspace(createTX, recordsPath);
+
+
+    DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
     createTX.commit();
 
     Transaction newPair = FDBHelper.openTransaction(db);
