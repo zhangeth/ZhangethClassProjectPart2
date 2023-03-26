@@ -74,7 +74,7 @@ public class Part2Test {
   /**
    * Points: 10
    */
-  /*
+
   @Test
   public void unitTest1() {
     tableManager.dropAllTables();
@@ -105,7 +105,7 @@ public class Part2Test {
     assertEquals(StatusCode.DATA_RECORD_CREATION_ATTRIBUTE_TYPE_UNMATCHED, records.insertRecord(EmployeeTableName, EmployeeTablePKAttributes, new Object[]{initialNumberOfRecords+1}, new String[]{"Name"}, new Object[]{12345}));
 
     System.out.println("Test1 passed!");
-  } */
+  }
 
   /**
    * Points: 15

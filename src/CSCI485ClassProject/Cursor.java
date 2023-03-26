@@ -18,9 +18,7 @@ public class Cursor {
   private DirectorySubspace recordsSubspace;
   private String tableName;
   private List<String> recordsPath;
-
   private TableMetadata tbm;
-
   private Mode mode;
 
   private boolean startAtBeginning;
@@ -42,9 +40,11 @@ public class Cursor {
     Transaction tx = FDBHelper.openTransaction(db);
     // get subspace
     recordsSubspace = FDBHelper.createOrOpenSubspace(tx, recordsPath);
-    tx.close();
 
     startAtBeginning = true;
+
+    tbm = RecordsHelper.convertNameToTableMetaData(db, tx, tableName);
+    tx.close();
   }
 
   public Record goToFirst()
@@ -52,7 +52,16 @@ public class Cursor {
     Transaction tx = FDBHelper.openTransaction(db);
     List<FDBKVPair> records = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, tx, recordsPath);
 
+    List<String> attributes = new ArrayList<>(tbm.getAttributes().keySet());
+    // List<String> primaryKeys =
+
+    // iterate through and get first thing
+
     Record res = new Record();
+    // convert according to type
+    records.get(0).getKey();
+
+
 
     // make the first record
 

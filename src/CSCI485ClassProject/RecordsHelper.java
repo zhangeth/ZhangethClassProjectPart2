@@ -72,5 +72,17 @@ public class RecordsHelper {
         return transformer.convertBackToTableMetadata(FDBHelper.getAllKeyValuePairsOfSubdirectory(db, tx, tblAttributeDirPath));
     }
 
+    public static List<String> getNonPrimaryAttrs(TableMetadata tbm)
+    {
+        // Linked Hash to preserve order of elements
+        Set<String> nonPrimaryAttrSet = new LinkedHashSet<>(tbm.getAttributes().keySet());
+        Set<String> primarySet = new LinkedHashSet<>(tbm.getPrimaryKeys());
+        // remove primary keys from attr set
+        nonPrimaryAttrSet.removeAll(primarySet);
+
+
+        return new ArrayList<>(nonPrimaryAttrSet);
+    }
+
 
 }

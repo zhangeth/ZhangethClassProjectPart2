@@ -110,9 +110,6 @@ public class RecordsImpl implements Records{
 
     t.close();
 
-
-    // collect all into key value record to add to the subdirectory
-
     return StatusCode.SUCCESS;
   }
 
