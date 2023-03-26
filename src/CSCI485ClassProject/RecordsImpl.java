@@ -64,7 +64,7 @@ public class RecordsImpl implements Records{
     // check table metadata
     List<String> recordsPath = new ArrayList<>();
     recordsPath.add(tableName);
-    recordsPath.add("records");
+    recordsPath.add("attributeStore");
 
 
     DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
