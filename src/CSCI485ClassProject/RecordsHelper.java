@@ -27,6 +27,9 @@ public class RecordsHelper {
     {
         Set<String> attrSet = new HashSet<>(Arrays.asList(attrNames));
         Set<String> tbmAttrSet = new HashSet<>(tbm.getAttributes().keySet());
+        // remove primary keys from attr set
+        tbmAttrSet.removeAll(new HashSet<>(tbm.getPrimaryKeys()));
+
         System.out.println("attr Name set");
         for (String s : attrNames)
         {
