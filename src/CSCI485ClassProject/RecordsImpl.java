@@ -54,7 +54,8 @@ public class RecordsImpl implements Records{
 
     for (FDBKVPair pair : kvPairs)
     {
-      System.out.println("pair: " + pair.toString());
+      System.out.print("pair key: " + pair.getKey().toString());
+      System.out.println(" value : " + pair.getValue().toString());
     }
 
 
