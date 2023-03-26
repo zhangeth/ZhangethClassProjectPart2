@@ -4,10 +4,7 @@ import CSCI485ClassProject.models.AttributeType;
 import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.Record;
 import CSCI485ClassProject.models.TableMetadata;
-import com.apple.foundationdb.Database;
-import com.apple.foundationdb.FDB;
-import com.apple.foundationdb.Transaction;
-import com.apple.foundationdb.TransactionContext;
+import com.apple.foundationdb.*;
 import com.apple.foundationdb.directory.Directory;
 import com.apple.foundationdb.directory.DirectoryLayer;
 import com.apple.foundationdb.directory.DirectorySubspace;
@@ -50,8 +47,6 @@ public class RecordsImpl implements Records{
 
     // compare attributes
     if (attrNames.length != attrValues.length ) {
-      System.out.println(attrNames.toString());
-      System.out.println(attrValues.length + " values length, " + attrNames.length + " names length");
       return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
     }
 
@@ -100,6 +95,7 @@ public class RecordsImpl implements Records{
     FDBHelper.tryCommitTx(createTX, 0);
 
     // print
+/*
     Transaction t = db.createTransaction();
 
     try {
@@ -113,6 +109,7 @@ public class RecordsImpl implements Records{
     }
 
     t.close();
+*/
 
     // collect all into key value record to add to the subdirectory
 
@@ -131,22 +128,27 @@ public class RecordsImpl implements Records{
 
   @Override
   public Cursor openCursor(String tableName, Cursor.Mode mode) {
-    Cursor cursor = new Cursor();
 
-    Transaction tx = FDBHelper.openTransaction(db);
-    // find table
-    // FDBHelper.
-    return cursor;
+    // check if table exists
+    if (!RecordsHelper.doesTableExists(db, tableName))
+    {
+      return null;
+    }
+    // make cursor
+    return new Cursor(tableName, mode, db);
   }
 
   @Override
   public Record getFirst(Cursor cursor) {
+
+    //DirectorySubspace dir = FDBHelper.createOrOpenSubspace(tx, path);
+    //Range range = dir.range();
     return null;
   }
 
   @Override
   public Record getLast(Cursor cursor) {
-    return null;
+    return cursor.goToLast();
   }
 
   @Override

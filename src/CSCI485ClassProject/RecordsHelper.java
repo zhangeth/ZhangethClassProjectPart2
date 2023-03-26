@@ -3,13 +3,27 @@ package CSCI485ClassProject;
 import CSCI485ClassProject.models.TableMetadata;
 import com.apple.foundationdb.Database;
 import com.apple.foundationdb.Transaction;
+import com.apple.foundationdb.directory.DirectorySubspace;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class RecordsHelper {
+    public static boolean doesTableExists(Database db, String tableName)
+    {
+        boolean res = false;
+        Transaction tx = FDBHelper.openTransaction(db);
+        List<String> tableSubdirectory = new ArrayList<>();
+        tableSubdirectory.add(tableName);
+
+        if (FDBHelper.doesSubdirectoryExists(tx, tableSubdirectory))
+        {
+            res = true;
+        }
+        tx.close();
+
+        return res;
+    }
+
     public static boolean arePrimaryKeysValid(String[] primaryKeys, TableMetadata tbm)
     {
         // make into sets to negate order
