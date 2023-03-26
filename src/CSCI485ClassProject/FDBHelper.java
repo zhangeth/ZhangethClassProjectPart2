@@ -144,5 +144,6 @@ public class FDBHelper {
 
   public static void abortTransaction(Transaction tx) {
     tx.cancel();
+    tx.close();
   }
 }

@@ -50,6 +50,8 @@ public class RecordsImpl implements Records{
 
     // compare attributes
     if (attrNames.length != attrValues.length || !RecordsHelper.areAttributesValid(attrNames, tbm)) {
+      System.out.println(attrNames.toString());
+      System.out.println(attrValues.length + " values length, " + attrNames.length + " names length");
       return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
     }
 
@@ -64,6 +66,7 @@ public class RecordsImpl implements Records{
               !(attrType == AttributeType.DOUBLE && (attrValues[i] instanceof Double))
           )
       {
+        FDBHelper.abortTransaction(tx);
         return StatusCode.DATA_RECORD_CREATION_ATTRIBUTE_TYPE_UNMATCHED;
       }
     }
@@ -93,7 +96,6 @@ public class RecordsImpl implements Records{
 
     // print
     Transaction t = db.createTransaction();
-    System.out.println("Records exists?: " + FDBHelper.doesSubdirectoryExists(t, recordsPath));
 
     try {
       List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath);
