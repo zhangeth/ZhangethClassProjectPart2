@@ -69,7 +69,7 @@ public class RecordsImpl implements Records{
     DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
     createTX.commit().join();
 
-    Transaction newPair = FDBHelper.openTransaction(db);
+    Transaction newPair = db.createTransaction();
     // make record
     Tuple primaryTuple = new Tuple();
     // make key value pair Tuple
@@ -93,6 +93,7 @@ public class RecordsImpl implements Records{
     // print
     Transaction t = db.createTransaction();
     System.out.println("Records exists?: " + FDBHelper.doesSubdirectoryExists(t, recordsPath));
+
     List<FDBKVPair> newPairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath);
 
     for (FDBKVPair pair : newPairs)
