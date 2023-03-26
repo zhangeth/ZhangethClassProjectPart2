@@ -44,7 +44,8 @@ public class RecordsImpl implements Records{
     DirectorySubspace tableDir = FDBHelper.openSubspace(tx, tableSubdirectory);
     List<String> tblAttributeDirPath = transformer.getTableAttributeStorePath();
 
-    FDBKVPair pair = FDBHelper.getCertainKeyValuePairInSubdirectory(tableDir, tx, TableMetadataTransformer.getTableAttributeKeyTuple("name"), tblAttributeDirPath);
+    Transaction trans = FDBHelper.openTransaction(db);
+    FDBKVPair pair = FDBHelper.getCertainKeyValuePairInSubdirectory(tableAttrSpace, trans, TableMetadataTransformer.getTableAttributeKeyTuple("name"), tblAttributeDirPath);
 
     System.out.println("pair: " + pair.toString());
 
