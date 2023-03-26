@@ -40,7 +40,7 @@ public class RecordsImpl implements Records{
     if (primaryKeysValues.length != primaryKeys.length || attrNames.length != attrValues.length)
       return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
 
-    // make tuple to insert
+    // get meta data
     TableMetadataTransformer transformer = new TableMetadataTransformer(tableName);
     DirectorySubspace tableAttrSpace = FDBHelper.createOrOpenSubspace(tx, transformer.getTableAttributeStorePath());
 
@@ -63,17 +63,16 @@ public class RecordsImpl implements Records{
     Transaction createTX = db.createTransaction();
     // check table metadata
     List<String> recordsPath = new ArrayList<>();
-    recordsPath.add(tableName);
-    recordsPath.add("records");
+    recordsPath.add(tableName); recordsPath.add("records");
 
     DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
 
     // make record
-    Tuple primaryTuple = new Tuple();
+    Tuple keyTuple = new Tuple();
     // make key value pair Tuple
     for (int i = 0 ; i < primaryKeysValues.length; i++)
     {
-      primaryTuple.addObject(primaryKeysValues[i]);
+      keyTuple.addObject(primaryKeysValues[i]);
       System.out.println(primaryKeysValues[i] + ": pkeyValue");
     }
 
@@ -84,7 +83,8 @@ public class RecordsImpl implements Records{
       valueTuple.addObject(attrValues[i]);
       System.out.println(attrValues[i] + ": valueValue");
     }
-    FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, primaryTuple, valueTuple));
+
+    FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, keyTuple, valueTuple));
     createTX.commit().join();
     createTX.close();
 
@@ -92,14 +92,12 @@ public class RecordsImpl implements Records{
     Transaction t = db.createTransaction();
     System.out.println("Records exists?: " + FDBHelper.doesSubdirectoryExists(t, recordsPath));
 
-    // read using normal method
-
-    Tuple keyTuple = new Tuple();
-    for (int i = 0 ; i < primaryKeysValues.length; i++)
-      keyTuple.addObject(primaryKeysValues[i]);
-
     try {
-      FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath);
+      List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath);
+      for (FDBKVPair p : pairs)
+      {
+        System.out.println("added pair: " + p.getKey());
+      }
     }  catch (Exception e) {
       System.out.println(e);
     }
