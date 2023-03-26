@@ -46,9 +46,7 @@ public class RecordsImpl implements Records{
 
     List<String> tblAttributeDirPath = transformer.getTableAttributeStorePath();
 
-    System.out.println(tblAttributeDirPath.toString());
-
-    // sample read
+    // read data and see if it matches what's given
     Transaction readTX = db.createTransaction();
 
     List<FDBKVPair> kvPairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTX, tblAttributeDirPath);
@@ -86,11 +84,7 @@ public class RecordsImpl implements Records{
       valueTuple.addObject(attrValues[i]);
       System.out.println(attrValues[i] + ": valueValue");
     }
-
-    createTX.set(recordSubspace.pack(primaryTuple), valueTuple.pack());
-    // open subdirectory records
-    createTX.commit().join();
-    createTX.close();
+    FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, primaryTuple, valueTuple));
 
     // print
     Transaction t = db.createTransaction();
