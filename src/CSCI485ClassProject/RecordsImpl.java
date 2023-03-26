@@ -99,7 +99,8 @@ public class RecordsImpl implements Records{
     // read using normal method
 
     Tuple keyTuple = new Tuple();
-    keyTuple.addObject(primaryKeysValues[0]);
+    for (int i = 0 ; i < primaryKeysValues.length; i++)
+      keyTuple.addObject(primaryKeysValues[i]);
 
     try {
       Object value = Tuple.fromBytes(t.get(recordSubspace.pack(keyTuple)).get());
