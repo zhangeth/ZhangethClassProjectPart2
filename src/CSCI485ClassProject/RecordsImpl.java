@@ -14,6 +14,7 @@ import com.apple.foundationdb.tuple.Tuple;
 import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class RecordsImpl implements Records{
 
@@ -94,12 +95,18 @@ public class RecordsImpl implements Records{
     Transaction t = db.createTransaction();
     System.out.println("Records exists?: " + FDBHelper.doesSubdirectoryExists(t, recordsPath));
 
-    List<FDBKVPair> newPairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath);
+    // read using normal method
 
-    for (FDBKVPair pair : newPairs)
-    {
-      System.out.print("pair key: " + pair.getKey().toString());
-      System.out.println(" value : " + pair.getValue().toString());
+    Tuple keyTuple = new Tuple();
+    keyTuple.add(0);
+
+    try {
+      Object value = Tuple.fromBytes(t.get(recordSubspace.pack(keyTuple)).get());
+      System.out.println("Object: " + value.toString());
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    } catch (ExecutionException e) {
+      throw new RuntimeException(e);
     }
     t.close();
 
