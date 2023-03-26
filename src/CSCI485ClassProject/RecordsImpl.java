@@ -64,13 +64,12 @@ public class RecordsImpl implements Records{
     // check table metadata
     List<String> recordsPath = new ArrayList<>();
     recordsPath.add(tableName);
-    recordsPath.add("attributeStore");
-
+    recordsPath.add("records");
 
     DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
-    createTX.commit();
+    createTX.commit().join();
 
-    Transaction newPair = FDBHelper.openTransaction(db);
+ /*   Transaction newPair = FDBHelper.openTransaction(db);
     // make record
     Tuple primaryTuple = new Tuple();
     // make key value pair Tuple
@@ -88,7 +87,7 @@ public class RecordsImpl implements Records{
     newPair.set(recordSubspace.pack(primaryTuple), valueTuple.pack());
     // open subdirectory records
     newPair.commit();
-    newPair.close();
+    newPair.close();*/
 
     // print
     Transaction t = db.createTransaction();
