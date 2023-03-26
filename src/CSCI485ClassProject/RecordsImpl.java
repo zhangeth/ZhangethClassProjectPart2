@@ -45,8 +45,18 @@ public class RecordsImpl implements Records{
 
     //Transaction trans = FDBHelper.openTransaction(db);
     //FDBKVPair pair = FDBHelper.getCertainKeyValuePairInSubdirectory(tableAttrSpace, trans, TableMetadataTransformer.getTableAttributeKeyTuple("name"), tblAttributeDirPath);
+    Tuple key = new Tuple();
+    // sample read
+    Transaction readTX = db.createTransaction();
+    String name = "name";
 
-    System.out.println("pair: " + tblAttributeDirPath.toString());
+    List<FDBKVPair> kvPairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTX, tblAttributeDirPath);
+
+    for (FDBKVPair pair : kvPairs)
+    {
+      System.out.println("pair: " + pair.toString());
+    }
+
 
 
     // check table metadata
