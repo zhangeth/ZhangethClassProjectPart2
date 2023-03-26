@@ -30,6 +30,7 @@ public class RecordsHelper {
         // remove primary keys from attr set
         tbmAttrSet.removeAll(new HashSet<>(tbm.getPrimaryKeys()));
 
+        /*
         System.out.println("attr Name set");
         for (String s : attrNames)
         {
@@ -37,10 +38,12 @@ public class RecordsHelper {
         }
         System.out.println();
 
-        for (String s : tbm.getAttributes().keySet())
+        for (String s : tbmAttrSet)
         {
             System.out.println(s);
         }
+
+         */
         // compare content of sets
         if (!attrSet.equals(tbmAttrSet)){
             return false;

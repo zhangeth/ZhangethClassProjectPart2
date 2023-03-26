@@ -61,7 +61,7 @@ public class RecordsImpl implements Records{
       AttributeType attrType = attrMap.get(attrNames[i]);
       if (    !(attrType == AttributeType.INT && attrValues[i] instanceof Integer) ||
               !(attrType == AttributeType.VARCHAR && attrValues[i] instanceof String) ||
-              !(attrType == AttributeType.DOUBLE && attrValues[i] instanceof Double)
+              !(attrType == AttributeType.DOUBLE && (attrValues[i] instanceof Double || attrValues[i] instanceof Long))
           )
       {
         return StatusCode.DATA_RECORD_CREATION_ATTRIBUTE_TYPE_UNMATCHED;
