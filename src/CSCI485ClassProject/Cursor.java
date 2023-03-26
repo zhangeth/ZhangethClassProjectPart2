@@ -6,5 +6,11 @@ public class Cursor {
     READ_WRITE
   }
 
-  // your code here
+  // your code here cursor table it's bound to, starting point, current point
+  // constructor
+  Cursor(){
+
+  }
+
+
 }

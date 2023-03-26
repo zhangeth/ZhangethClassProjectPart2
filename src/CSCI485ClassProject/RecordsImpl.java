@@ -2,22 +2,101 @@ package CSCI485ClassProject;
 
 import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.Record;
+import com.apple.foundationdb.Database;
+import com.apple.foundationdb.FDB;
+import com.apple.foundationdb.Transaction;
+import com.apple.foundationdb.directory.Directory;
+import com.apple.foundationdb.directory.DirectorySubspace;
+import com.apple.foundationdb.tuple.Tuple;
+
+import java.awt.image.AreaAveragingScaleFilter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecordsImpl implements Records{
 
+  private Database db;
+
+  // constructor
+  public RecordsImpl()
+  {
+    db = FDBHelper.initialization();
+  }
+
   @Override
   public StatusCode insertRecord(String tableName, String[] primaryKeys, Object[] primaryKeysValues, String[] attrNames, Object[] attrValues) {
+    Transaction tx = FDBHelper.openTransaction(db);
+
+    List<String> tableSubdirectory = new ArrayList<>();
+    tableSubdirectory.add(tableName);
+
+    if (!FDBHelper.doesSubdirectoryExists(tx, tableSubdirectory))
+      return StatusCode.TABLE_NOT_FOUND;
+
+    // check parameters
+    if (primaryKeysValues.length != primaryKeys.length || attrNames.length != attrValues.length)
+      return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
+
+    // make tuple to insert
+    TableMetadataTransformer transformer = new TableMetadataTransformer(tableName);
+    DirectorySubspace tableAttrSpace = FDBHelper.createOrOpenSubspace(tx, transformer.getTableAttributeStorePath());
+
+    DirectorySubspace tableDir = FDBHelper.openSubspace(tx, tableSubdirectory);
+    List<String> tblAttributeDirPath = transformer.getTableAttributeStorePath();
+
+    FDBKVPair pair = FDBHelper.getCertainKeyValuePairInSubdirectory(tableDir, tx, TableMetadataTransformer.getTableAttributeKeyTuple("name"), tblAttributeDirPath);
+
+    System.out.println("pair: " + pair.toString());
+
+
+    // check table metadata
+
+    // open subdirectory
+
+
+    // make key value pairs for each primary key value in the, from the values
+
+    //FDBKVPair entry = new FDBKVPair()
+    Tuple primaryTuple = new Tuple();
+    // make key value pair Tuple
+    for (int i = 0 ; i < primaryKeysValues.length; i++)
+    {
+      primaryTuple.addObject(primaryKeysValues[i]);
+    }
+    
+    Tuple valueTuple = new Tuple();
+    
+    for (int i = 0; i < attrValues.length; i++)
+    {
+      valueTuple.addObject(attrValues[i]);
+    }
+
+
+    // make key value  pair for each attribute
+
+    // collect all into key value record to add to the subdirectory
+
     return null;
   }
 
   @Override
   public Cursor openCursor(String tableName, String attrName, Object attrValue, ComparisonOperator operator, Cursor.Mode mode, boolean isUsingIndex) {
+    // make transaction that opens the correct table
+    Transaction tx = FDBHelper.openTransaction(db);
+    // find table
+
+    // FDBHelper.getAllDirectSubspaceName()
     return null;
   }
 
   @Override
   public Cursor openCursor(String tableName, Cursor.Mode mode) {
-    return null;
+    Cursor cursor = new Cursor();
+
+    Transaction tx = FDBHelper.openTransaction(db);
+    // find table
+    // FDBHelper.
+    return cursor;
   }
 
   @Override
