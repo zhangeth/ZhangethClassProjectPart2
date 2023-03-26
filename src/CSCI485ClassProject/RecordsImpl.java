@@ -94,8 +94,8 @@ public class RecordsImpl implements Records{
     int counter = 0;
     FDBHelper.tryCommitTx(createTX, 0);
 
-    // print
-/*
+    // print existing records
+
     Transaction t = db.createTransaction();
 
     try {
@@ -109,7 +109,7 @@ public class RecordsImpl implements Records{
     }
 
     t.close();
-*/
+
 
     // collect all into key value record to add to the subdirectory
 

@@ -1,6 +1,7 @@
 package CSCI485ClassProject;
 
 import CSCI485ClassProject.models.Record;
+import CSCI485ClassProject.models.TableMetadata;
 import com.apple.foundationdb.Database;
 import com.apple.foundationdb.Transaction;
 import com.apple.foundationdb.directory.DirectorySubspace;
@@ -17,6 +18,8 @@ public class Cursor {
   private DirectorySubspace recordsSubspace;
   private String tableName;
   private List<String> recordsPath;
+
+  private TableMetadata tbm;
 
   private Mode mode;
 
@@ -47,7 +50,10 @@ public class Cursor {
   public Record goToFirst()
   {
     Transaction tx = FDBHelper.openTransaction(db);
-    FDBHelper.getAllKeyValuePairsOfSubdirectory(db, tx, recordsPath);
+    List<FDBKVPair> records = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, tx, recordsPath);
+
+    Record res = new Record();
+
     // make the first record
 
     return null;
