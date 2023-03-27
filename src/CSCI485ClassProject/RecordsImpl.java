@@ -123,6 +123,9 @@ public class RecordsImpl implements Records{
     return null;
   }
 
+  // structure of record:  public HashMap<String, Value> getMapAttrNameToValue() {
+  //    return mapAttrNameToValue;
+  //  }
   @Override
   public Cursor openCursor(String tableName, Cursor.Mode mode) {
 
