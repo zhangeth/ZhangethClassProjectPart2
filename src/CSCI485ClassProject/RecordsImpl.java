@@ -82,12 +82,12 @@ public class RecordsImpl implements Records{
     // make key Tuple
     Tuple keyTuple = new Tuple();
     for (Object key : primaryKeysValues)
-      keyTuple.addObject(key);
+      keyTuple = keyTuple.addObject(key);
 
     // make value Tuple
     Tuple valueTuple = new Tuple();
     for (Object value : attrValues)
-      valueTuple.addObject(value);
+      valueTuple = valueTuple.addObject(value);
 
     createTX.close();
     Transaction ts = db.createTransaction();
@@ -99,10 +99,8 @@ public class RecordsImpl implements Records{
 
       FDBHelper.commitTransaction(ts);
       // int counter = ;
-      ts.close();
     }
-
-
+    ts.close();
     // print existing records
 
     Transaction t = db.createTransaction();
