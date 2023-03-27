@@ -132,9 +132,11 @@ public class FDBHelper {
       return true;
     } catch (FDBException e) {
       if (retryCounter < MAX_TRANSACTION_COMMIT_RETRY_TIMES) {
+        System.out.println("retrying");
         retryCounter++;
         tryCommitTx(tx, retryCounter);
       } else {
+        System.out.println("canceled");
         tx.cancel();
         return false;
       }

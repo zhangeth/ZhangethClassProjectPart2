@@ -72,7 +72,7 @@ public class RecordsImpl implements Records{
     }
 
     // start creating record: make records subdir under table dir
-    Transaction createTX = db.createTransaction();
+    Transaction createTX = FDBHelper.openTransaction(db);
 
     List<String> recordsPath = new ArrayList<>();
     recordsPath.add(tableName); recordsPath.add("records");
