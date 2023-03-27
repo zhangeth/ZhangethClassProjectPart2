@@ -51,9 +51,10 @@ public class Cursor {
 
   public Record goToFirst()
   {
+    System.out.println("starting go to first");
     Transaction tx = FDBHelper.openTransaction(db);
     // open all kv pairs
-    List<FDBKVPair> records = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, tx, recordsPath);
+    List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, tx, recordsPath);
 
     List<String> attributes = new ArrayList<>(tbm.getAttributes().keySet());
 
@@ -61,16 +62,18 @@ public class Cursor {
     // structure of meta data is not sorted, so need to go through and by order see what primary keys are mapped to which values
 
     // first fdbkvPair
-    Record res = new Record();
+    Record rec = new Record();
     // convert according to type
-    FDBKVPair firstRecord = records.get(0);
+    FDBKVPair firstRecord = pairs.get(0);
+
+    // make ordering form metatable
 
     // print firstRecord for now
 
     System.out.println(firstRecord.getKey().toString() + " this is first record key");
     System.out.println(firstRecord.getValue().toString() + "first record Value");
     // make primary attr t
-
+    tx.close();
 
 
     // make the first record
