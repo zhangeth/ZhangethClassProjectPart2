@@ -70,7 +70,7 @@ public class RecordsImpl implements Records{
     {
       return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
     }
-
+    tx.close();
     // start creating record: make records subdir under table dir
     Transaction createTX = FDBHelper.openTransaction(db);
 
@@ -89,10 +89,14 @@ public class RecordsImpl implements Records{
     for (Object value : attrValues)
       valueTuple.addObject(value);
 
+    createTX.close();
+    Transaction ts = db.createTransaction();
+
     // commit key and value tuples to db
-    FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, keyTuple, valueTuple));
+    FDBHelper.setFDBKVPair(recordSubspace, ts, new FDBKVPair(recordsPath, keyTuple, valueTuple));
     int counter = 0;
-    FDBHelper.tryCommitTx(createTX, 0);
+    FDBHelper.tryCommitTx(ts, 0);
+    ts.close();
 
     // print existing records
 
