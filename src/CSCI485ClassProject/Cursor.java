@@ -46,6 +46,8 @@ public class Cursor {
     startAtBeginning = true;
     // make table meta data object for ease of access
     tbm = RecordsHelper.convertNameToTableMetaData(db, tx, tableName);
+
+    System.out.println("Succcessfully made cursor");
     tx.close();
   }
 
@@ -56,6 +58,17 @@ public class Cursor {
     // open all kv pairs
     List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, tx, recordsPath);
 
+   // get meta data
+    TableMetadataTransformer tbmTransformer = new TableMetadataTransformer(tableName);
+    List<String> attrPath = tbmTransformer.getTableAttributeStorePath();
+    List<FDBKVPair> attrs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, tx, attrPath);
+
+    for (FDBKVPair p : attrs)
+    {
+      System.out.println("key: " + p.getKey().toString());
+      System.out.println("value: " + p.getValue().toString());
+    }
+
     List<String> attributes = new ArrayList<>(tbm.getAttributes().keySet());
 
     // iterate through and make map attribute map for record, with key tuple defined by metadata, and value data is non-primary key attributes
@@ -65,13 +78,13 @@ public class Cursor {
     Record rec = new Record();
     // convert according to type
     FDBKVPair firstRecord = pairs.get(0);
-
     // make ordering form metatable
 
     // print firstRecord for now
 
     System.out.println(firstRecord.getKey().toString() + " this is first record key");
     System.out.println(firstRecord.getValue().toString() + "first record Value");
+
     // make primary attr t
     tx.close();
 
