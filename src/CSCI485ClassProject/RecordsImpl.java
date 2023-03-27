@@ -89,24 +89,24 @@ public class RecordsImpl implements Records{
     for (Object value : attrValues)
       valueTuple = valueTuple.addObject(value);
 
-    createTX.close();
-    Transaction ts = db.createTransaction();
+    //createTX.close();
+    //Transaction ts = db.createTransaction();
     // commit key and value tuples to db
     // check if key exists
-    if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordSubspace, ts, keyTuple, recordsPath) == null)
+    if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordSubspace, createTX, keyTuple, recordsPath) == null)
     {
-      FDBHelper.setFDBKVPair(recordSubspace, ts, new FDBKVPair(recordsPath, keyTuple, valueTuple));
+      FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, keyTuple, valueTuple));
 
-      FDBHelper.commitTransaction(ts);
+      FDBHelper.commitTransaction(createTX);
       // int counter = ;
     }
-    ts.close();
+    //ts.close();
     // print existing records
 
-    Transaction t = db.createTransaction();
-
+    // Transaction c= db.createTransaction();
+    System.out.println(("before print"));
     try {
-      List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath);
+      List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, createTX, recordsPath);
       for (FDBKVPair p : pairs)
       {
         System.out.println("added pair: " + p.getKey().toString());
@@ -114,8 +114,9 @@ public class RecordsImpl implements Records{
     }  catch (Exception e) {
       System.out.println(e);
     }
+    System.out.println(("after print"));
 
-    t.close();
+    createTX.close();
 
     return StatusCode.SUCCESS;
   }
