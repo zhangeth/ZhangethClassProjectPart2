@@ -37,6 +37,7 @@ public class Cursor {
     // set name and mode
     this.tableName = tableName;
     this.mode = mode;
+    this.db = db;
 
     // get subsapce of path
     Transaction tx = FDBHelper.openTransaction(db);
