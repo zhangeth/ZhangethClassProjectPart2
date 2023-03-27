@@ -102,7 +102,7 @@ public class RecordsImpl implements Records{
       List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, t, recordsPath);
       for (FDBKVPair p : pairs)
       {
-        System.out.println("added pair: " + p.getKey());
+        System.out.println("added pair: " + p.getKey().toString());
       }
     }  catch (Exception e) {
       System.out.println(e);
