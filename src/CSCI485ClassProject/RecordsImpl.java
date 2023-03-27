@@ -102,7 +102,7 @@ public class RecordsImpl implements Records{
       ts.close();
     }
 
-    readtx.close();
+    readTx.close();
 
 
     // print existing records
