@@ -142,8 +142,7 @@ public class RecordsImpl implements Records{
   public Record getFirst(Cursor cursor) {
 
     //DirectorySubspace dir = FDBHelper.createOrOpenSubspace(tx, path);
-    //Range range = dir.range();
-    return null;
+    return cursor.goToFirst();
   }
 
   @Override
