@@ -132,6 +132,7 @@ public class RecordsImpl implements Records{
     // check if table exists
     if (!RecordsHelper.doesTableExists(db, tableName))
     {
+      System.out.println("table doesn't exist");
       return null;
     }
     // make cursor
