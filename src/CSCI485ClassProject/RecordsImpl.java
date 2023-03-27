@@ -91,10 +91,10 @@ public class RecordsImpl implements Records{
 
     createTX.close();
     Transaction ts = db.createTransaction();
-    Transaction readtx = db.createTransaction();
+    Transaction readTx = db.createTransaction();
     // commit key and value tuples to db
     // check if key exists
-    if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordSubspace, readtx, keyTuple, recordsPath) == null)
+    if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordSubspace, readTx, keyTuple, recordsPath) == null)
     {
       FDBHelper.setFDBKVPair(recordSubspace, ts, new FDBKVPair(recordsPath, keyTuple, valueTuple));
       int counter = 0;
