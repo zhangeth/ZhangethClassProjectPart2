@@ -163,6 +163,7 @@ public class Cursor {
 
         iterable = cursorTx.getRange(startBytes, endBytes, readLimit);
         iterator = iterable.iterator();
+        iterator.next();
         count = 0;
       }
       return convertFDBKVPairToRecord(convertKeyValueToFDBKVPair(kv));
