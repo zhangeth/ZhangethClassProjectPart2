@@ -162,7 +162,7 @@ public class Cursor {
     for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
     {
       System.out.println(e.getKey() + " rec Key");
-      System.out.println(e.getValue() + " rec Val");
+      System.out.println(e.getValue().toString() + " rec Val");
     }
     // check record
 
