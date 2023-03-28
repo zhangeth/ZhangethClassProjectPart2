@@ -84,7 +84,7 @@ public class Cursor {
 
   private void initializeIterableAndIterator()
   {
-    this.iterable = cursorTx.getRange(startBytes, endBytes, readLimit,!goingForward);
+    this.iterable = cursorTx.getRange(startBytes, endBytes, readLimit, !goingForward);
     this.iterator = iterable.iterator();
   }
 
@@ -137,8 +137,6 @@ public class Cursor {
   public Record goToLast()
   {
     goingForward = false;
-    startBytes = recordsSubspace.range().end;
-    endBytes = recordsSubspace.pack();
 
     initializeIterableAndIterator();
 
@@ -163,7 +161,7 @@ public class Cursor {
       {
         System.out.println("triggered");
         Tuple lastKey = recordsSubspace.unpack(kv.getKey());
-        startBytes = recordsSubspace.pack(lastKey);
+        endBytes = recordsSubspace.pack(lastKey);
         if (!goingForward)
         {
           System.out.println("going backwards");
