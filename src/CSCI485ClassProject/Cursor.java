@@ -71,7 +71,7 @@ public class Cursor {
       String attrName = String.valueOf(p.getKey());
       if (!tbm.getPrimaryKeysAsSet().contains(attrName))
       {
-        attrNamesInOrder.add(attrName);
+        attrNamesInOrder.add(attrName.substring(2, attrName.length() - 2));
         System.out.println("Adding: " + String.valueOf(attrName + "to names in order"));
       }
     }
