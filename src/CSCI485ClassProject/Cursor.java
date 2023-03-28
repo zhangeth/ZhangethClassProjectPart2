@@ -71,15 +71,15 @@ public class Cursor {
       String attrName = String.valueOf(p.getKey());
       if (!tbm.getPrimaryKeysAsSet().contains(attrName))
       {
-        attrNamesInOrder.add(String.valueOf(p.getKey()));
-        System.out.println("Adding: " + String.valueOf(p.getKey()) + "to names in order");
+        attrNamesInOrder.add(attrName);
+        System.out.println("Adding: " + String.valueOf(attrName + "to names in order"));
       }
     }
 
     System.out.println("Printing attrNames");
-    for (String s : attrNamesInOrder)
+    for (String s : tbm.getPrimaryKeys())
     {
-      System.out.println(s);
+      System.out.println("primary key strings " + s);
     }
     System.out.println("Done printing attrNames");
 
