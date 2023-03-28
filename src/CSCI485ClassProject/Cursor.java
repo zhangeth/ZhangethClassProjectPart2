@@ -35,7 +35,7 @@ public class Cursor {
   private List<String> attrNamesInOrder;
   private List<String> primaryKeysInOrder;
 
-  private boolean startAtBeginning;
+  private boolean goingForward;
 
 
   // place in table
@@ -59,7 +59,7 @@ public class Cursor {
     // get subspace
     recordsSubspace = FDBHelper.createOrOpenSubspace(cursorTx, recordsPath);
     // by default start at beginning of records
-    startAtBeginning = true;
+    goingForward = true;
     // make table meta data object for ease of access
     tbm = RecordsHelper.convertNameToTableMetaData(db, cursorTx, tableName);
     attrNamesInOrder = new ArrayList<>();
@@ -127,15 +127,38 @@ public class Cursor {
     return null;
   }
 
+  public Record getPrev()
+  {
+    return null;
+  }
+
   public Record getNext()
   {
     if (iterator.hasNext())
     {
       KeyValue kv = iterator.next();
-
+      return convertFDBKVPairToRecord(convertKeyValueToFDBKVPair(kv));
     }
+    // return EOF
+    System.out.println("cursor reached EOF");
     return null;
   }
+
+  public StatusCode commit()
+  {
+    try
+    {
+      FDBHelper.commitTransaction(cursorTx);
+    }
+    catch (Exception e)
+    {
+      System.out.println(e);
+    }
+    return StatusCode.SUCCESS;
+  }
+
+
+  // helper methods
 
   private FDBKVPair convertKeyValueToFDBKVPair(KeyValue kv)
   {
@@ -143,7 +166,7 @@ public class Cursor {
     return FDBHelper.getCertainKeyValuePairInSubdirectory(recordsSubspace, cursorTx, keyTuple, recordsPath);
   }
 
-  public Record convertFDBKVPairToRecord(FDBKVPair kv)
+  private Record convertFDBKVPairToRecord(FDBKVPair kv)
   {
     Record rec = new Record();
     // convert according to type
@@ -162,7 +185,6 @@ public class Cursor {
       rec.setAttrNameAndValue(primaryKeysInOrder.get(i), pkValues.get(primaryKeysInOrder.size() - 1 - i));
       System.out.println("primaryKeys printing: " + primaryKeysInOrder.get(i) + " from values read: " + pkValues.get(primaryKeysInOrder.size() - 1 - i));
     }
-    //rec.setAttrNameAndValue()
     // add non-primary attributes
     for (int i = 0; i < attrNamesInOrder.size(); i++)
     {

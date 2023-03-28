@@ -161,12 +161,12 @@ public class RecordsImpl implements Records{
 
   @Override
   public Record getNext(Cursor cursor) {
-    return null;
+    return cursor.getNext();
   }
 
   @Override
   public Record getPrevious(Cursor cursor) {
-    return null;
+    return cursor.getPrev();
   }
 
   @Override
@@ -181,7 +181,7 @@ public class RecordsImpl implements Records{
 
   @Override
   public StatusCode commitCursor(Cursor cursor) {
-    return null;
+    return cursor.commit();
   }
 
   @Override
