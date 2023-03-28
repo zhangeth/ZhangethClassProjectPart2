@@ -65,8 +65,6 @@ public class Cursor {
     byte[] startBytes = recordsSubspace.pack();
     byte[] endBytes = recordsSubspace.range().end;
 
-    this.iterable = tx.getRange(startBytes, endBytes);
-
     System.out.println("Succcessfully made cursor");
     tx.close();
   }
@@ -76,6 +74,10 @@ public class Cursor {
     System.out.println("starting go to first");
     Transaction tx = FDBHelper.openTransaction(db);
 
+    byte[] startBytes = recordsSubspace.pack();
+    byte[] endBytes = recordsSubspace.range().end;
+
+    this.iterable = tx.getRange(startBytes, endBytes);
     AsyncIterator<KeyValue> iterator = iterable.iterator();
     KeyValue keyValue = iterator.next();
 
