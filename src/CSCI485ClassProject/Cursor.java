@@ -63,12 +63,43 @@ public class Cursor {
     attrNamesInOrder = new ArrayList<>();
     primaryKeysInOrder = new ArrayList<>();
 
+    // initialize order of attributes
+    initializeAttrList();
+
     // initialize iterable over range of keys in subspace
     byte[] startBytes = recordsSubspace.pack();
     byte[] endBytes = recordsSubspace.range().end;
     this.iterable = cursorTx.getRange(startBytes, endBytes);
 
     System.out.println("Succcessfully made cursor");
+  }
+  private void initializeAttrList()
+  {
+    TableMetadataTransformer tbmTransformer = new TableMetadataTransformer(tableName);
+    List<String> attrPath = tbmTransformer.getTableAttributeStorePath();
+    List<FDBKVPair> attrs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, cursorTx, attrPath);
+
+    for (FDBKVPair p : attrs)
+    {
+      String rawString = p.getKey().toString();
+      String attrName = rawString.substring(2, rawString.length() - 2);
+
+      if (!tbm.getPrimaryKeysAsSet().contains(attrName))
+      {
+        attrNamesInOrder.add(attrName);
+        System.out.println("Adding: " + String.valueOf(attrName + " to np Keys in order"));
+      }
+      // primary keys
+      else {
+        primaryKeysInOrder.add(attrName);
+        System.out.println("Adding: " + String.valueOf(attrName + " to primaryKeys in order"));
+      }
+    }
+
+    for (String s : tbm.getPrimaryKeys())
+    {
+      System.out.println("primary key strings " + s);
+    }
   }
 
   public Record goToFirst()
@@ -118,6 +149,34 @@ public class Cursor {
     return null;
   }
 
+  public Record convertKeyValueToRecord(KeyValue kv)
+  {
+    Record rec = new Record();
+    // convert according to type
+    Tuple keyTuple = recordsSubspace.unpack(kv.getKey());
+    Tuple valueTuple = recordsSubspace.unpack(kv.getValue());
+
+    System.out.println(keyTuple.toString() + "  record key");
+    System.out.println(valueTuple.toString() + " Value");
+
+    List<Object> pkValues = keyTuple.getItems();
+    List<Object> values = valueTuple.getItems();
+
+    // add primary keys
+    for (int i = 0; i < primaryKeysInOrder.size(); i++)
+    {
+      rec.setAttrNameAndValue(primaryKeysInOrder.get(i), pkValues.get(primaryKeysInOrder.size() - 1 - i));
+      System.out.println("primaryKeys printing: " + primaryKeysInOrder.get(i) + " from values read: " + pkValues.get(primaryKeysInOrder.size() - 1 - i));
+    }
+    //rec.setAttrNameAndValue()
+    // add non-primary attributes
+    for (int i = 0; i < attrNamesInOrder.size(); i++)
+    {
+      rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(attrNamesInOrder.size() - 1 - i));
+    }
+
+    return rec;
+  }
 
 
 }
