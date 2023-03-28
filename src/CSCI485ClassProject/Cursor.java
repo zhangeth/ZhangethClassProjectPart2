@@ -6,6 +6,7 @@ import com.apple.foundationdb.Database;
 import com.apple.foundationdb.Transaction;
 import com.apple.foundationdb.directory.DirectorySubspace;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +23,7 @@ public class Cursor {
   private Mode mode;
 
   private List<String> attrNamesInOrder;
+  private List<String> primaryKeysInOrder;
 
   private boolean startAtBeginning;
 
@@ -50,6 +52,8 @@ public class Cursor {
     // make table meta data object for ease of access
     tbm = RecordsHelper.convertNameToTableMetaData(db, tx, tableName);
     attrNamesInOrder = new ArrayList<>();
+    primaryKeysInOrder = new ArrayList<>();
+
     System.out.println("Succcessfully made cursor");
     tx.close();
   }
@@ -74,16 +78,20 @@ public class Cursor {
       if (!tbm.getPrimaryKeysAsSet().contains(attrName))
       {
         attrNamesInOrder.add(attrName);
-        System.out.println("Adding: " + String.valueOf(attrName + "to names in order"));
+        System.out.println("Adding: " + String.valueOf(attrName + " to np Keys in order"));
+      }
+      // primary key
+      else {
+        primaryKeysInOrder.add(attrName);
+        System.out.println("Adding: " + String.valueOf(attrName + " to primaryKeys in order"));
       }
     }
 
-    System.out.println("Printing attrNames");
     for (String s : tbm.getPrimaryKeys())
     {
       System.out.println("primary key strings " + s);
     }
-    System.out.println("Done printing attrNames");
+
 
     List<String> attributes = new ArrayList<>(tbm.getAttributes().keySet());
 
@@ -99,14 +107,18 @@ public class Cursor {
     System.out.println(firstRecord.getValue().toString() + "first record Value");
 
     List<Object> values = firstRecord.getValue().getItems();
-    // make ordering form metatable
-
-    // print firstRecord for now
+    List<Object> pkValues = firstRecord.getKey().getItems();
+    // add primary keys
+    for (int i = 0; i < primaryKeysInOrder.size(); i++)
+    {
+      rec.setAttrNameAndValue(primaryKeysInOrder.get(i), pkValues.get(i));
+    }
+    //rec.setAttrNameAndValue()
+    // add non-primary attributes
     for (int i = 0; i < attrNamesInOrder.size(); i++)
     {
       rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(i));
     }
-
 
 
     // make primary attr t
