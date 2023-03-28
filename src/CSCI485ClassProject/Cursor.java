@@ -168,7 +168,6 @@ public class Cursor {
         }
         iterable = cursorTx.getRange(startBytes, endBytes, readLimit, !goingForward);
         iterator = iterable.iterator();
-        iterator.next();
 
         count = 0;
       }
