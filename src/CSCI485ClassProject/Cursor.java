@@ -9,6 +9,8 @@ import com.apple.foundationdb.async.AsyncIterable;
 import com.apple.foundationdb.async.AsyncIterator;
 import com.apple.foundationdb.directory.DirectorySubspace;
 import com.apple.foundationdb.tuple.Tuple;
+import com.apple.foundationdb.tuple.ByteArrayUtil;
+
 
 import java.sql.Array;
 import java.util.ArrayList;
@@ -22,23 +24,23 @@ public class Cursor {
   }
   private Database db;
   private DirectorySubspace recordsSubspace;
-
   private Transaction cursorTx;
   private String tableName;
   private List<String> recordsPath;
   private TableMetadata tbm;
   private Mode mode;
+  private final int readLimit = 3;
 
+  private int count;
+
+  byte[] startBytes;
+  byte[] endBytes;
   private AsyncIterable<KeyValue> iterable;
   private AsyncIterator<KeyValue> iterator;
 
   private List<String> attrNamesInOrder;
   private List<String> primaryKeysInOrder;
-
   private boolean goingForward;
-
-
-  // place in table
 
   // your code here cursor table it's bound to, starting point, current point
   // constructor
@@ -69,15 +71,26 @@ public class Cursor {
     initializeAttrList();
 
     // initialize iterable over range of keys in subspace
-    byte[] startBytes = recordsSubspace.pack();
-    byte[] endBytes = recordsSubspace.range().end;
+    this.startBytes = recordsSubspace.pack();
+    this.endBytes = recordsSubspace.range().end;
 
-    this.iterable = cursorTx.getRange(startBytes, endBytes);
+    count = 0;
+
+    this.iterable = cursorTx.getRange(startBytes, endBytes, readLimit);
     this.iterator = iterable.iterator();
-
 
     System.out.println("Succcessfully made cursor");
   }
+
+  private void initializeDirection(boolean goingForward)
+  {
+    byte[] startBytes = recordsSubspace.pack();
+    byte[] endBytes = recordsSubspace.range().end;
+
+    iterable = cursorTx.getRange(startBytes, endBytes, readLimit,!goingForward);
+    this.iterator = iterable.iterator();
+  }
+
   private void initializeAttrList()
   {
     TableMetadataTransformer tbmTransformer = new TableMetadataTransformer(tableName);
@@ -110,6 +123,7 @@ public class Cursor {
   public Record goToFirst()
   {
     System.out.println("starting go to first");
+    goingForward = true;
 
     KeyValue keyValue = iterator.next();
 
@@ -124,6 +138,9 @@ public class Cursor {
 
   public Record goToLast()
   {
+
+    goingForward = false;
+
     return null;
   }
 
@@ -137,6 +154,17 @@ public class Cursor {
     if (iterator.hasNext())
     {
       KeyValue kv = iterator.next();
+      count++;
+      // load next keys if not at end of subdir yet
+      if (count >= readLimit && ByteArrayUtil.compareUnsigned(startBytes, endBytes) < 0)
+      {
+        Tuple lastKey = recordsSubspace.unpack(kv.getKey());
+        startBytes = recordsSubspace.pack(lastKey);
+
+        iterable = cursorTx.getRange(startBytes, endBytes, readLimit);
+        iterator = iterable.iterator();
+        count = 0;
+      }
       return convertFDBKVPairToRecord(convertKeyValueToFDBKVPair(kv));
     }
     // return EOF
