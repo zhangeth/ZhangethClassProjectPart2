@@ -105,9 +105,6 @@ public class Cursor {
       rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(attrNamesInOrder.size() - 1 - i));
     }*/
 
-    // make primary attr t
-    tx.close();
-
     return rec;
   }
 
