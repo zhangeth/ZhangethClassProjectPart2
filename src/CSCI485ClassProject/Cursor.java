@@ -110,6 +110,12 @@ public class Cursor {
     KeyValue keyValue = iterator.next();
 
     Tuple keyTuple = recordsSubspace.unpack(keyValue.getKey());
+
+    FDBKVPair kvPair =  FDBHelper.getCertainKeyValuePairInSubdirectory(recordsSubspace, cursorTx, keyTuple, recordsPath);
+
+    System.out.println("Tuple KeyBytes: " + kvPair.getKey().toString());
+    System.out.println("Tuple valueBytes: " + kvPair.getValue().toString());
+
     Tuple valueTuple = recordsSubspace.unpack(keyValue.getValue());
 
     System.out.println("Tuple KeyBytes: " + keyTuple.toString());
