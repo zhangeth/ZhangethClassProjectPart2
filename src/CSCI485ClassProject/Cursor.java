@@ -161,7 +161,10 @@ public class Cursor {
         System.out.println("triggered");
         Tuple lastKey = recordsSubspace.unpack(kv.getKey());
         startBytes = recordsSubspace.pack(lastKey);
-
+        if (!goingForward)
+        {
+          System.out.println("going backwards");
+        }
         iterable = cursorTx.getRange(startBytes, endBytes, readLimit, !goingForward);
         iterator = iterable.iterator();
         iterator.next();
