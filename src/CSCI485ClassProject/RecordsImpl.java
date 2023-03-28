@@ -80,17 +80,15 @@ public class RecordsImpl implements Records{
     DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
 
     // make key Tuple
-    Tuple keyTuple = new Tuple();
-    for (Object key : primaryKeysValues)
-      keyTuple = keyTuple.addObject(key);
+    Tuple keyTuple = new Tuple().addAll(Arrays.asList(primaryKeysValues));
+/*    for (Object key : primaryKeysValues)
+      keyTuple = keyTuple.addObject(key);*/
 
     // make value Tuple
-    Tuple valueTuple = new Tuple();
-    for (Object value : attrValues)
-      valueTuple = valueTuple.addObject(value);
+    Tuple valueTuple = new Tuple().addAll(Arrays.asList(attrValues));
+    /*for (Object value : attrValues)
+      valueTuple = valueTuple.addObject(value);*/
 
-    //createTX.close();
-    //Transaction ts = db.createTransaction();
     // commit key and value tuples to db
     // check if key exists
     if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordSubspace, createTX, keyTuple, recordsPath) == null)
@@ -100,17 +98,22 @@ public class RecordsImpl implements Records{
       FDBHelper.commitTransaction(createTX);
       // int counter = ;
     }
+
     createTX.close();
     //ts.close();
     // print existing records
 
-    Transaction readTx = db.createTransaction();
+   Transaction readTx = db.createTransaction();
     System.out.println(("before print"));
     try {
       List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTx, recordsPath);
       for (FDBKVPair p : pairs)
       {
         System.out.println("added pair: " + p.getKey().toString());
+        for (Object o : p.getValue().getItems()){
+          System.out.print("obj: " + o);
+        }
+        System.out.println();
       }
     }  catch (Exception e) {
       System.out.println(e);
