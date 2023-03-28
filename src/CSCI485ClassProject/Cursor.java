@@ -13,6 +13,7 @@ import com.apple.foundationdb.tuple.Tuple;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Cursor {
   public enum Mode {
@@ -119,11 +120,6 @@ public class Cursor {
     System.out.println("Tuple KeyBytes: " + kvPair.getKey().toString());
     System.out.println("Tuple valueBytes: " + kvPair.getValue().toString());
 
-
-    // iterate through and make map attribute map for record, with key tuple defined by metadata, and value data is non-primary key attributes
-    // structure of meta data is not sorted, so need to go through and by order see what primary keys are mapped to which values
-
-    // first fdbkvPair
     return convertKeyValueToRecord(kvPair);
 
   }
@@ -163,6 +159,12 @@ public class Cursor {
     {
       rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(attrNamesInOrder.size() - 1 - i));
     }
+    for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
+    {
+      System.out.println(e.getKey() + " rec Key");
+      System.out.println(e.getValue() + " rec Val");
+    }
+    // check record
 
     return rec;
   }
