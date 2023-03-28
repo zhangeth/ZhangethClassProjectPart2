@@ -111,13 +111,13 @@ public class Cursor {
     // add primary keys
     for (int i = 0; i < primaryKeysInOrder.size(); i++)
     {
-      rec.setAttrNameAndValue(primaryKeysInOrder.get(i), pkValues.get(i));
+      rec.setAttrNameAndValue(primaryKeysInOrder.get(i), pkValues.get(primaryKeysInOrder.size() - 1 - i));
     }
     //rec.setAttrNameAndValue()
     // add non-primary attributes
     for (int i = 0; i < attrNamesInOrder.size(); i++)
     {
-      rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(i));
+      rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(attrNamesInOrder.size() - 1 - i));
     }
 
 
