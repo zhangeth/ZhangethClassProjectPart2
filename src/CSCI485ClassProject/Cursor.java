@@ -117,26 +117,7 @@ public class Cursor {
 
     // first fdbkvPair
     return convertKeyValueToRecord(keyValue);
-    // convert according to type
 
-/*    System.out.println(firstRecord.getKey().toString() + " this is first record key");
-    System.out.println(firstRecord.getValue().toString() + "first record Value");
-
-    List<Object> values = firstRecord.getValue().getItems();
-    List<Object> pkValues = firstRecord.getKey().getItems();
-    // add primary keys
-    for (int i = 0; i < primaryKeysInOrder.size(); i++)
-    {
-      rec.setAttrNameAndValue(primaryKeysInOrder.get(i), pkValues.get(primaryKeysInOrder.size() - 1 - i));
-    }
-    //rec.setAttrNameAndValue()
-    // add non-primary attributes
-    for (int i = 0; i < attrNamesInOrder.size(); i++)
-    {
-      rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(attrNamesInOrder.size() - 1 - i));
-    }*/
-
-    return rec;
   }
 
   public Record goToLast()
