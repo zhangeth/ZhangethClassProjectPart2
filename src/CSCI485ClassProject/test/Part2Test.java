@@ -178,7 +178,7 @@ public class Part2Test {
    * Points: 15
    */
 
-  /*
+
   @Test
   public void unitTest3() {
     // insert records with new column "Salary"
@@ -212,7 +212,7 @@ public class Part2Test {
     assertEquals(expectedEmployeeTableSchema, tables.get(EmployeeTableName));
     System.out.println("Test3 passed!");
   }
-  */
+
   /**
    * Points: 15
    */
