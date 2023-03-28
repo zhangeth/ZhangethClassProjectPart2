@@ -159,13 +159,10 @@ public class Cursor {
       // load next keys if not at end of subdir yet
       if (count >= (readLimit - 1))
       {
-        System.out.println("triggered");
+        //System.out.println("triggered");
         Tuple lastKey = recordsSubspace.unpack(kv.getKey());
         endBytes = recordsSubspace.pack(lastKey);
-        if (!goingForward)
-        {
-          System.out.println("going backwards");
-        }
+
         iterable = cursorTx.getRange(startBytes, endBytes, readLimit, !goingForward);
         iterator = iterable.iterator();
 
@@ -231,8 +228,8 @@ public class Cursor {
     Tuple keyTuple = kv.getKey();
     Tuple valueTuple = kv.getValue();
 
-    System.out.println(keyTuple.toString() + "  record key");
-    System.out.println(valueTuple.toString() + " Value");
+    /*System.out.println(keyTuple.toString() + "  record key");
+    System.out.println(valueTuple.toString() + " Value"); */
 
     List<Object> pkValues = keyTuple.getItems();
     List<Object> values = valueTuple.getItems();
@@ -241,7 +238,7 @@ public class Cursor {
     for (int i = 0; i < primaryKeysInOrder.size(); i++)
     {
       rec.setAttrNameAndValue(primaryKeysInOrder.get(i), pkValues.get(primaryKeysInOrder.size() - 1 - i));
-      System.out.println("primaryKeys printing: " + primaryKeysInOrder.get(i) + " from values read: " + pkValues.get(primaryKeysInOrder.size() - 1 - i));
+      //System.out.println("primaryKeys printing: " + primaryKeysInOrder.get(i) + " from values read: " + pkValues.get(primaryKeysInOrder.size() - 1 - i));
     }
     // add non-primary attributes
     for (int i = 0; i < attrNamesInOrder.size(); i++)

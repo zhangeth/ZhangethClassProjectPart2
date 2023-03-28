@@ -53,6 +53,22 @@ public class RecordsImpl implements Records{
     // compare attribute types
     HashMap<String, AttributeType> attrMap = tbm.getAttributes();
 
+    // add attributes that don't exist
+    TableManagerImpl tbManager = new TableManagerImpl();
+
+    if (attrNames.length > attrMap.keySet().size())
+    {
+      Set<String> addedAttrSet = new HashSet<>(Arrays.asList(attrNames));
+      // add attributes that don't exist
+      addedAttrSet.removeAll(attrMap.keySet());
+      // need index of values to type check
+      for (int i = 0; i < attrValues.length; i++)
+      {
+        //if (addedAttrSet.contains(attrNames[i]))
+        // tbManager.addAttribute(tableName, s, )
+      }
+    }
+
     for (int i = 0; i < attrNames.length; i++)
     {
       AttributeType attrType = attrMap.get(attrNames[i]);
