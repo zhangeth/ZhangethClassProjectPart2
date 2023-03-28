@@ -49,7 +49,7 @@ public class Cursor {
     startAtBeginning = true;
     // make table meta data object for ease of access
     tbm = RecordsHelper.convertNameToTableMetaData(db, tx, tableName);
-
+    attrNamesInOrder = new ArrayList<>();
     System.out.println("Succcessfully made cursor");
     tx.close();
   }
