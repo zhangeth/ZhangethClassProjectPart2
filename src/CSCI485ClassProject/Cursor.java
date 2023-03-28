@@ -68,10 +68,11 @@ public class Cursor {
 
     for (FDBKVPair p : attrs)
     {
-      attrNamesInOrder.add(p.getKey().toString());
-      System.out.println("key: " + p.getKey().toString());
-      System.out.println("value: " + p.getValue().toString());
+      attrNamesInOrder.add(String.valueOf(p.getKey()));
+      System.out.println("key: " + String.valueOf(p.getKey()));
+      System.out.println("value: " + String.valueOf(p.getValue()));
     }
+
     System.out.println("Printing attrNames");
     for (String s : attrNamesInOrder)
     {
