@@ -90,6 +90,9 @@ public class Cursor {
     // convert according to type
     FDBKVPair firstRecord = pairs.get(0);
 
+    System.out.println(firstRecord.getKey().toString() + " this is first record key");
+    System.out.println(firstRecord.getValue().toString() + "first record Value");
+
     List<Object> values = firstRecord.getValue().getItems();
     // make ordering form metatable
 
@@ -99,8 +102,7 @@ public class Cursor {
       rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(i));
     }
 
-    System.out.println(firstRecord.getKey().toString() + " this is first record key");
-    System.out.println(firstRecord.getValue().toString() + "first record Value");
+
 
     // make primary attr t
     tx.close();
