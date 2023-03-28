@@ -151,7 +151,28 @@ public class Cursor {
 
   public Record getPrev()
   {
-    return getNext();
+    if (iterator.hasNext())
+    {
+      KeyValue kv = iterator.next();
+      count++;
+      // load next keys if not at end of subdir yet
+      if (count >= (readLimit - 1) && ByteArrayUtil.compareUnsigned(startBytes, endBytes) > 0)
+      {
+        Tuple lastKey = recordsSubspace.unpack(kv.getKey());
+        startBytes = recordsSubspace.pack(lastKey);
+
+        iterable = cursorTx.getRange(startBytes, endBytes, readLimit, !goingForward);
+        iterator = iterable.iterator();
+        iterator.next();
+
+        count = 0;
+      }
+
+      return convertFDBKVPairToRecord(convertKeyValueToFDBKVPair(kv));
+    }
+    // return EOF
+    System.out.println("cursor reached EOF");
+    return null;
   }
 
   public Record getNext()
