@@ -68,10 +68,12 @@ public class Cursor {
 
     for (FDBKVPair p : attrs)
     {
-      String attrName = String.valueOf(p.getKey());
+      String rawString = p.getKey().toString();
+      String attrName = rawString.substring(2, rawString.length() - 2);
+
       if (!tbm.getPrimaryKeysAsSet().contains(attrName))
       {
-        attrNamesInOrder.add(attrName.substring(2, attrName.length() - 2));
+        attrNamesInOrder.add(attrName);
         System.out.println("Adding: " + String.valueOf(attrName + "to names in order"));
       }
     }
