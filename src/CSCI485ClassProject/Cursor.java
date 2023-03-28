@@ -21,6 +21,8 @@ public class Cursor {
   }
   private Database db;
   private DirectorySubspace recordsSubspace;
+
+  private Transaction cursorTx;
   private String tableName;
   private List<String> recordsPath;
   private TableMetadata tbm;
@@ -51,33 +53,28 @@ public class Cursor {
     this.db = db;
 
     // get subsapce of path
-    Transaction tx = FDBHelper.openTransaction(db);
+    this.cursorTx = FDBHelper.openTransaction(db);
     // get subspace
-    recordsSubspace = FDBHelper.createOrOpenSubspace(tx, recordsPath);
+    recordsSubspace = FDBHelper.createOrOpenSubspace(cursorTx, recordsPath);
     // by default start at beginning of records
     startAtBeginning = true;
     // make table meta data object for ease of access
-    tbm = RecordsHelper.convertNameToTableMetaData(db, tx, tableName);
+    tbm = RecordsHelper.convertNameToTableMetaData(db, cursorTx, tableName);
     attrNamesInOrder = new ArrayList<>();
     primaryKeysInOrder = new ArrayList<>();
 
     // initialize iterable over range of keys in subspace
     byte[] startBytes = recordsSubspace.pack();
     byte[] endBytes = recordsSubspace.range().end;
+    this.iterable = cursorTx.getRange(startBytes, endBytes);
 
     System.out.println("Succcessfully made cursor");
-    tx.close();
   }
 
   public Record goToFirst()
   {
     System.out.println("starting go to first");
-    Transaction tx = FDBHelper.openTransaction(db);
 
-    byte[] startBytes = recordsSubspace.pack();
-    byte[] endBytes = recordsSubspace.range().end;
-
-    this.iterable = tx.getRange(startBytes, endBytes);
     AsyncIterator<KeyValue> iterator = iterable.iterator();
     KeyValue keyValue = iterator.next();
 
