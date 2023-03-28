@@ -29,6 +29,7 @@ public class Cursor {
   private Mode mode;
 
   private AsyncIterable<KeyValue> iterable;
+  private AsyncIterator<KeyValue> iterator;
 
   private List<String> attrNamesInOrder;
   private List<String> primaryKeysInOrder;
@@ -69,7 +70,10 @@ public class Cursor {
     // initialize iterable over range of keys in subspace
     byte[] startBytes = recordsSubspace.pack();
     byte[] endBytes = recordsSubspace.range().end;
+
     this.iterable = cursorTx.getRange(startBytes, endBytes);
+    this.iterator = iterable.iterator();
+
 
     System.out.println("Succcessfully made cursor");
   }
@@ -106,7 +110,6 @@ public class Cursor {
   {
     System.out.println("starting go to first");
 
-    AsyncIterator<KeyValue> iterator = iterable.iterator();
     KeyValue keyValue = iterator.next();
 
     Tuple keyTuple = recordsSubspace.unpack(keyValue.getKey());
