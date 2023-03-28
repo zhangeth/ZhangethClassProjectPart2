@@ -69,6 +69,8 @@ public class TableMetadata {
     return new ArrayList<>(primaryKeys);
   }
 
+  public Set<String> getPrimaryKeysAsSet(){ return primaryKeys;}
+
   public StatusCode setPrimaryKeys(List<String> primaryKeys) {
     for (String pk : primaryKeys) {
       if (!attributes.containsKey(pk)) {
