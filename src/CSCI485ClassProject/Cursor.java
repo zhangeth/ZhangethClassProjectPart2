@@ -113,14 +113,12 @@ public class Cursor {
 
     KeyValue keyValue = iterator.next();
 
-    Tuple keyTuple = recordsSubspace.unpack(keyValue.getKey());
-
-    FDBKVPair kvPair =  FDBHelper.getCertainKeyValuePairInSubdirectory(recordsSubspace, cursorTx, keyTuple, recordsPath);
+    FDBKVPair kvPair = convertKeyValueToFDBKVPair(keyValue);
 
     System.out.println("Tuple KeyBytes: " + kvPair.getKey().toString());
     System.out.println("Tuple valueBytes: " + kvPair.getValue().toString());
 
-    return convertKeyValueToRecord(kvPair);
+    return convertFDBKVPairToRecord(kvPair);
 
   }
 
@@ -131,10 +129,21 @@ public class Cursor {
 
   public Record getNext()
   {
+    if (iterator.hasNext())
+    {
+      KeyValue kv = iterator.next();
+
+    }
     return null;
   }
 
-  public Record convertKeyValueToRecord(FDBKVPair kv)
+  private FDBKVPair convertKeyValueToFDBKVPair(KeyValue kv)
+  {
+    Tuple keyTuple = recordsSubspace.unpack(kv.getKey());
+    return FDBHelper.getCertainKeyValuePairInSubdirectory(recordsSubspace, cursorTx, keyTuple, recordsPath);
+  }
+
+  public Record convertFDBKVPairToRecord(FDBKVPair kv)
   {
     Record rec = new Record();
     // convert according to type
@@ -159,7 +168,7 @@ public class Cursor {
     {
       rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(attrNamesInOrder.size() - 1 - i));
     }
-    System.out.println("ssn: " + String.valueOf(rec.getValueForGivenAttrName("SSN")));
+/*    System.out.println("ssn: " + String.valueOf(rec.getValueForGivenAttrName("SSN")));
 
     System.out.println("Name: " + String.valueOf(rec.getValueForGivenAttrName("Name")));
 
@@ -167,7 +176,7 @@ public class Cursor {
     {
       System.out.println(e.getKey() + " rec Key");
       System.out.println(e.getValue().toString() + " rec Val");
-    }
+    }*/
     // check record
 
     return rec;
