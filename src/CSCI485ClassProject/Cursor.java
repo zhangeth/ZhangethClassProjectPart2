@@ -21,6 +21,8 @@ public class Cursor {
   private TableMetadata tbm;
   private Mode mode;
 
+  private List<String> attrNamesInOrder;
+
   private boolean startAtBeginning;
 
   // place in table
@@ -66,9 +68,16 @@ public class Cursor {
 
     for (FDBKVPair p : attrs)
     {
+      attrNamesInOrder.add(p.getKey().toString());
       System.out.println("key: " + p.getKey().toString());
       System.out.println("value: " + p.getValue().toString());
     }
+    System.out.println("Printing attrNames");
+    for (String s : attrNamesInOrder)
+    {
+      System.out.println(s);
+    }
+    System.out.println("Done printing attrNames");
 
     List<String> attributes = new ArrayList<>(tbm.getAttributes().keySet());
 

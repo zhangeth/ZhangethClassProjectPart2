@@ -81,13 +81,9 @@ public class RecordsImpl implements Records{
 
     // make key Tuple
     Tuple keyTuple = new Tuple().addAll(Arrays.asList(primaryKeysValues));
-/*    for (Object key : primaryKeysValues)
-      keyTuple = keyTuple.addObject(key);*/
 
     // make value Tuple
     Tuple valueTuple = new Tuple().addAll(Arrays.asList(attrValues));
-    /*for (Object value : attrValues)
-      valueTuple = valueTuple.addObject(value);*/
 
     // commit key and value tuples to db
     // check if key exists
@@ -103,7 +99,7 @@ public class RecordsImpl implements Records{
     //ts.close();
     // print existing records
 
-   Transaction readTx = db.createTransaction();
+/*   Transaction readTx = db.createTransaction();
     System.out.println(("before print"));
     try {
       List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTx, recordsPath);
@@ -120,7 +116,7 @@ public class RecordsImpl implements Records{
     }
     System.out.println(("after print"));
 
-    readTx.close();
+    readTx.close();*/
 
     return StatusCode.SUCCESS;
   }
