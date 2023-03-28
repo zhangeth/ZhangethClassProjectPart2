@@ -110,6 +110,8 @@ public class Cursor {
     KeyValue keyValue = iterator.next();
 
     Tuple keyBytes = recordsSubspace.unpack(keyValue.getKey());
+    Tuple valueBytes = recordsSubspace.unpack(keyValue.getValue());
+
     System.out.println("Tuple KeyBytes: " + keyBytes.toString());
 
     // iterate through and make map attribute map for record, with key tuple defined by metadata, and value data is non-primary key attributes
