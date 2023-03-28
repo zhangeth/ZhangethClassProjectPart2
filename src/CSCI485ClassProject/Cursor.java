@@ -116,16 +116,12 @@ public class Cursor {
     System.out.println("Tuple KeyBytes: " + kvPair.getKey().toString());
     System.out.println("Tuple valueBytes: " + kvPair.getValue().toString());
 
-    Tuple valueTuple = recordsSubspace.unpack(keyValue.getValue());
-
-    System.out.println("Tuple KeyBytes: " + keyTuple.toString());
-    System.out.println("Tuple valueBytes: " + valueTuple.toString());
 
     // iterate through and make map attribute map for record, with key tuple defined by metadata, and value data is non-primary key attributes
     // structure of meta data is not sorted, so need to go through and by order see what primary keys are mapped to which values
 
     // first fdbkvPair
-    return convertKeyValueToRecord(keyValue);
+    return convertKeyValueToRecord(kvPair);
 
   }
 
@@ -139,12 +135,12 @@ public class Cursor {
     return null;
   }
 
-  public Record convertKeyValueToRecord(KeyValue kv)
+  public Record convertKeyValueToRecord(FDBKVPair kv)
   {
     Record rec = new Record();
     // convert according to type
-    Tuple keyTuple = recordsSubspace.unpack(kv.getKey());
-    Tuple valueTuple = recordsSubspace.unpack(kv.getValue());
+    Tuple keyTuple = kv.getKey();
+    Tuple valueTuple = kv.getValue();
 
     System.out.println(keyTuple.toString() + "  record key");
     System.out.println(valueTuple.toString() + " Value");
