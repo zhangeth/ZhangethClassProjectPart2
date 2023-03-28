@@ -159,6 +159,10 @@ public class Cursor {
     {
       rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(attrNamesInOrder.size() - 1 - i));
     }
+    System.out.println("ssn: " + String.valueOf(rec.getValueForGivenAttrName("SSN")));
+
+    System.out.println("Name: " + String.valueOf(rec.getValueForGivenAttrName("Name")));
+
     for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
     {
       System.out.println(e.getKey() + " rec Key");
