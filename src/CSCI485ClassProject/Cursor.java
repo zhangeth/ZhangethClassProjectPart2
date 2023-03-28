@@ -116,7 +116,7 @@ public class Cursor {
     // structure of meta data is not sorted, so need to go through and by order see what primary keys are mapped to which values
 
     // first fdbkvPair
-    Record rec = new Record();
+    return convertKeyValueToRecord(keyValue);
     // convert according to type
 
 /*    System.out.println(firstRecord.getKey().toString() + " this is first record key");
