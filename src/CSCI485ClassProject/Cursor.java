@@ -137,6 +137,9 @@ public class Cursor {
   public Record goToLast()
   {
     goingForward = false;
+    startBytes = recordsSubspace.range().end;
+    endBytes = recordsSubspace.pack();
+
     initializeIterableAndIterator();
 
     KeyValue keyValue = iterator.next();
@@ -156,7 +159,7 @@ public class Cursor {
       KeyValue kv = iterator.next();
       count++;
       // load next keys if not at end of subdir yet
-      if (count >= (readLimit - 1))
+      if (count >= (readLimit - 1) && ByteArrayUtil.compareUnsigned(startBytes, endBytes) > 0)
       {
         System.out.println("triggered");
         Tuple lastKey = recordsSubspace.unpack(kv.getKey());
