@@ -109,10 +109,11 @@ public class Cursor {
     AsyncIterator<KeyValue> iterator = iterable.iterator();
     KeyValue keyValue = iterator.next();
 
-    Tuple keyBytes = recordsSubspace.unpack(keyValue.getKey());
-    Tuple valueBytes = recordsSubspace.unpack(keyValue.getValue());
+    Tuple keyTuple = recordsSubspace.unpack(keyValue.getKey());
+    Tuple valueTuple = recordsSubspace.unpack(keyValue.getValue());
 
-    System.out.println("Tuple KeyBytes: " + keyBytes.toString());
+    System.out.println("Tuple KeyBytes: " + keyTuple.toString());
+    System.out.println("Tuple valueBytes: " + valueTuple.toString());
 
     // iterate through and make map attribute map for record, with key tuple defined by metadata, and value data is non-primary key attributes
     // structure of meta data is not sorted, so need to go through and by order see what primary keys are mapped to which values
