@@ -157,7 +157,7 @@ public class Cursor {
       KeyValue kv = iterator.next();
       count++;
       // load next keys if not at end of subdir yet
-      if (count >= (readLimit - 1) && ByteArrayUtil.compareUnsigned(startBytes, endBytes) > 0)
+      if (count >= (readLimit - 1) && ByteArrayUtil.compareUnsigned(startBytes, endBytes) >= 0)
       {
         System.out.println("triggered");
         Tuple lastKey = recordsSubspace.unpack(kv.getKey());
