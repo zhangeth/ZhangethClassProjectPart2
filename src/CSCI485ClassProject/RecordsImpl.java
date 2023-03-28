@@ -100,13 +100,14 @@ public class RecordsImpl implements Records{
       FDBHelper.commitTransaction(createTX);
       // int counter = ;
     }
+    createTX.close();
     //ts.close();
     // print existing records
 
-    // Transaction c= db.createTransaction();
+    Transaction readTx = db.createTransaction();
     System.out.println(("before print"));
     try {
-      List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, createTX, recordsPath);
+      List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTx, recordsPath);
       for (FDBKVPair p : pairs)
       {
         System.out.println("added pair: " + p.getKey().toString());
@@ -116,7 +117,7 @@ public class RecordsImpl implements Records{
     }
     System.out.println(("after print"));
 
-    createTX.close();
+    readTx.close();
 
     return StatusCode.SUCCESS;
   }
