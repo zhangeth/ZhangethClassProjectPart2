@@ -55,8 +55,6 @@ public class RecordsImpl implements Records{
 
     // add attributes that don't exist
     TableManagerImpl tbManager = new TableManagerImpl();
-/*    System.out.println("length of names: " + attrNames.length);
-    System.out.println("length of map: " + (attrMap.keySet().size() - tbm.getPrimaryKeys().size()));*/
 
     Set<String> addedAttrSet = new HashSet<>();
 
@@ -64,12 +62,9 @@ public class RecordsImpl implements Records{
     {
       System.out.println("entered adding attributes");
       addedAttrSet = new HashSet<>(Arrays.asList(attrNames));
+
       // add attributes that don't exist
       addedAttrSet.removeAll(attrMap.keySet());
-/*      for (String s : addedAttrSet)
-      {
-        System.out.println(" to b added: " + s);
-      }*/
 
       // need index of values to type check
       for (int i = 0; i < attrValues.length; i++)
@@ -77,8 +72,6 @@ public class RecordsImpl implements Records{
         if (addedAttrSet.contains(attrNames[i]))
         {
           tbManager.addAttribute(tableName, attrNames[i], RecordsHelper.getType(attrValues[i]));
-          System.out.println("Added attribute: " + attrNames[i]);
-          System.out.println("type of added attr: " + RecordsHelper.getType(attrValues[i]).toString());
         }
       }
     }
@@ -137,7 +130,6 @@ public class RecordsImpl implements Records{
 
     for (int i = 0; i < attrNames.length; i++)
     {
-      //System.out.println("attrName: " + attrNames[i]);
       Tuple keyTuple = new Tuple().addObject(primaryValue);
       keyTuple = keyTuple.addObject(attrNames[i]);
 
@@ -171,9 +163,6 @@ public class RecordsImpl implements Records{
     return new Cursor(tableName, attrName, attrValue, operator, mode, isUsingIndex, db);
   }
 
-  // structure of record:  public HashMap<String, Value> getMapAttrNameToValue() {
-  //    return mapAttrNameToValue;
-  //  }
   @Override
   public Cursor openCursor(String tableName, Cursor.Mode mode) {
 
@@ -189,8 +178,6 @@ public class RecordsImpl implements Records{
 
   @Override
   public Record getFirst(Cursor cursor) {
-
-    //DirectorySubspace dir = FDBHelper.createOrOpenSubspace(tx, path);
     return cursor.goToFirst();
   }
 

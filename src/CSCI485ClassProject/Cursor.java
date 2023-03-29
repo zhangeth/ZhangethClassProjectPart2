@@ -137,8 +137,6 @@ public class Cursor {
 
       List<FDBKVPair> newRecord = new ArrayList<>();
 
-      System.out.println("making record: " + keyObjects.get(1).toString());
-
       while (keyObjects.get(1).equals(currentPrimaryValue))
       {
         newRecord.add(kvPair);
