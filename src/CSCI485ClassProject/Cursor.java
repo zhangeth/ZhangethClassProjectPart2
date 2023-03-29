@@ -161,6 +161,10 @@ public class Cursor {
   public Record getNext()
   {
     Record res = makeRecordFromCurrentKey();
+    if (res == null)
+    {
+      return null;
+    }
 
     if (operator != null)
     {
@@ -241,7 +245,7 @@ public class Cursor {
       Double thresholdDouble = Double.valueOf(threshold.toString());
 
       if (recordValue > thresholdDouble) {
-        if (operator == ComparisonOperator.GREATER_THAN)
+        if (operator == ComparisonOperator.GREATER_THAN || operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO)
           return true;
       }
       else if (recordValue == thresholdDouble)
@@ -251,7 +255,7 @@ public class Cursor {
       }
       else
       {
-        if (operator == ComparisonOperator.LESS_THAN)
+        if (operator == ComparisonOperator.LESS_THAN || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
           return true;
       }
     }
@@ -263,7 +267,7 @@ public class Cursor {
       String thresholdStr = threshold.toString();
 
       if (recordValue.compareTo(thresholdStr) > 0 ) {
-        if (operator == ComparisonOperator.GREATER_THAN)
+        if (operator == ComparisonOperator.GREATER_THAN || operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO)
           return true;
       }
       else if (recordValue == thresholdStr)
@@ -273,7 +277,7 @@ public class Cursor {
       }
       else
       {
-        if (operator == ComparisonOperator.LESS_THAN)
+        if (operator == ComparisonOperator.LESS_THAN || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
           return true;
       }
     }
