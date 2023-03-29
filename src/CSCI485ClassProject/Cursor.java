@@ -302,10 +302,11 @@ public class Cursor {
     List<Object> keyObjects = kvPair.getKey().getItems();
 
     AsyncIterator<KeyValue> copyIterator = iterable.iterator();
-    while(copyIterator.next() != prevKeyValue)
+    while(!copyIterator.next().equals(prevKeyValue))
     {
       copyIterator.next();
     }
+
     KeyValue kv = copyIterator.next();
     System.out.println("copy kv: " + kv.getKey().toString());
     System.out.println("start of delete key " + prevKeyValue.getKey().toString());
