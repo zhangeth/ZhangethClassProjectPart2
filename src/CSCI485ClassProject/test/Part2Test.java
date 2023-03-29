@@ -294,7 +294,7 @@ public class Part2Test {
   /**
    * Points: 15
    */
-  /*
+
   @Test
   public void unitTest6() {
     Cursor cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ_WRITE);
@@ -353,7 +353,7 @@ public class Part2Test {
 
     System.out.println("Test6 passed!");
   }
-  */
+
   /**
    * Points: 15
    */

@@ -216,7 +216,7 @@ public class RecordsImpl implements Records{
 
   @Override
   public StatusCode deleteRecord(Cursor cursor) {
-    return null;
+    return cursor.deleteRecord();
   }
 
   @Override
