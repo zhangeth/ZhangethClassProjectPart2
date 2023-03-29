@@ -99,6 +99,7 @@ public class RecordsImpl implements Records{
     Object primaryValue = primaryKeysValues[0];
     for (int i = 0; i < attrNames.length; i++)
     {
+      System.out.println("attrName: " + attrNames[i]);
       Tuple keyTuple = new Tuple().addObject(primaryValue);
       keyTuple = keyTuple.addObject(attrNames[i]);
 
