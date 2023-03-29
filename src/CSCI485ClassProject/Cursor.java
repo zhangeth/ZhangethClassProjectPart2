@@ -141,7 +141,6 @@ public class Cursor {
 
   public Record getNext()
   {
-    setCurrentKeyToNext();
     return makeRecordFromCurrentKey();
   }
 
