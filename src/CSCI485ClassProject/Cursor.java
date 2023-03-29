@@ -159,7 +159,11 @@ public class Cursor {
 
       currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
-      System.out.println(rec.getValueForGivenAttrName("SSN") + " obtained ssn");
+      for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
+      {
+        System.out.println("found rec attr: " + e.getKey() + " value: " + e.getValue());
+      }
+      //System.out.println(rec.getValueForGivenAttrName("SSN") + " obtained ssn");
 
       return rec;
     }
@@ -193,7 +197,7 @@ public class Cursor {
       //System.out.println(res.getMapAttrNameToValue().toString());
       if (satisfiesOperator(res))
       {
-        //System.out.print("returning: " + res.getValueForGivenAttrName("SSN"));
+        System.out.print("returning: " + res.getValueForGivenAttrName("SSN"));
         //System.out.println();
         return res;
       }
