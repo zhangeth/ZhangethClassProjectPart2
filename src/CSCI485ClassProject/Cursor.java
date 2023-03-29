@@ -5,6 +5,7 @@ import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.Record;
 import CSCI485ClassProject.models.TableMetadata;
 import com.apple.foundationdb.Database;
+import com.apple.foundationdb.FDB;
 import com.apple.foundationdb.KeyValue;
 import com.apple.foundationdb.Transaction;
 import com.apple.foundationdb.async.AsyncIterable;
@@ -305,13 +306,14 @@ public class Cursor {
     AsyncIterable<KeyValue> iterable1 = cursorTx.getRange(recordsSubspace.range(), ROW_LIMIT_UNLIMITED, !goingForward);
     AsyncIterator<KeyValue> copyIterator = iterable1.iterator();
 
-    while(!copyIterator.next().equals(prevKeyValue))
+    FDBKVPair p = convertKeyValueToFDBKVPair(copyIterator.next());
+    while(!p.equals(prevKeyValue))
     {
-      copyIterator.next();
+      convertKeyValueToFDBKVPair(copyIterator.next());
     }
 
-    KeyValue kv = copyIterator.next();
-    System.out.println("copy kv: " + kv.getKey().toString());
+    // KeyValue kv = copyIterator.next();
+    System.out.println("copy kv: " + p.getKey().toString());
     System.out.println("start of delete key " + prevKeyValue.getKey().toString());
 
     System.out.println("deleting record: " + keyObjects.get(1).toString());
