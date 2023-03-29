@@ -309,7 +309,10 @@ public class Cursor {
     FDBKVPair p = convertKeyValueToFDBKVPair(copyIterator.next());
     while(!p.equals(prevKeyValue))
     {
-      convertKeyValueToFDBKVPair(copyIterator.next());
+      if (copyIterator.hasNext())
+        convertKeyValueToFDBKVPair(copyIterator.next());
+      else
+        break;
     }
 
     // KeyValue kv = copyIterator.next();
