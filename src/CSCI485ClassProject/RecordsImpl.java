@@ -55,6 +55,8 @@ public class RecordsImpl implements Records{
 
     // add attributes that don't exist
     TableManagerImpl tbManager = new TableManagerImpl();
+    System.out.println("length of names: " + attrNames.length);
+    System.out.println("length of map: " + attrMap.keySet().size());
 
     if (attrNames.length > attrMap.keySet().size())
     {
