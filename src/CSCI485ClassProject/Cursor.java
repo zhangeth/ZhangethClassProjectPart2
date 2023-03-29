@@ -134,17 +134,17 @@ public class Cursor {
       List<Object> keyObjects = kvPair.getKey().getItems();
 
       prevKeyValue = currentKeyValue;
-      prevPrimaryValue = kvPair.getKey().get(1);
+      prevPrimaryValue = kvPair.getKey().get(0);
 
       List<FDBKVPair> newRecord = new ArrayList<>();
 
-      System.out.println("making record: " + keyObjects.get(1).toString());
+      System.out.println("making record: " + keyObjects.get(0).toString());
 
       while (keyObjects.get(1).equals(currentPrimaryValue))
       {
         newRecord.add(kvPair);
 
-        rec.setAttrNameAndValue((String) keyObjects.get(2), kvPair.getValue().get(0));
+        rec.setAttrNameAndValue((String) keyObjects.get(1), kvPair.getValue().get(0));
         // System.out.println("adding attr: " + keyObjects.get(2).toString());
         if (!iterator.hasNext())
         {
@@ -324,10 +324,11 @@ public class Cursor {
   {
     if (currentRecord != null)
     {
-      System.out.println("deleting: " + currentRecord.get(0).getKey().get(1).toString());
+      System.out.println("deleting: " + currentRecord.get(0).getKey().get(0).toString());
       for (FDBKVPair p : currentRecord)
       {
-        System.out.println("deleting attr: " + p.getKey().get(2).toString());
+
+        System.out.println("deleting attr: " + p.getKey().get(1).toString());
         FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, p.getKey());
       }
 
