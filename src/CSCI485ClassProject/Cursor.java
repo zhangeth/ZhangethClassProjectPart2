@@ -124,6 +124,8 @@ public class Cursor {
 
     while (keyObjects.get(0).equals(currentRecord))
     {
+      System.out.println("Adding attr: " + keyObjects.get(1).toString());
+
       rec.setAttrNameAndValue(keyObjects.get(1).toString(), kvPair.getValue().toString());
       keyValue = iterator.next();
       keyObjects = convertKeyValueToFDBKVPair(keyValue).getKey().getItems();
