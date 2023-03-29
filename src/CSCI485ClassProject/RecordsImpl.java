@@ -56,7 +56,7 @@ public class RecordsImpl implements Records{
     // add attributes that don't exist
     TableManagerImpl tbManager = new TableManagerImpl();
     System.out.println("length of names: " + attrNames.length);
-    System.out.println("length of map: " + attrMap.keySet().size());
+    System.out.println("length of map: " + (attrMap.keySet().size() - tbm.getPrimaryKeys().size()));
 
     if (attrNames.length > (attrMap.keySet().size() - tbm.getPrimaryKeys().size()))
     {
@@ -82,6 +82,11 @@ public class RecordsImpl implements Records{
     tbm = RecordsHelper.convertNameToTableMetaData(db, tx, tableName);
     attrMap = tbm.getAttributes();
 
+    for (String s: attrMap.keySet())
+    {
+      System.out.println(s + " attributes in thingy");
+    }
+
     for (int i = 0; i < attrNames.length; i++)
     {
       AttributeType attrType = attrMap.get(attrNames[i]);
@@ -90,6 +95,9 @@ public class RecordsImpl implements Records{
               !(attrType == AttributeType.DOUBLE && (attrValues[i] instanceof Double))
           )
       {
+        System.out.println(attrType.toString() + " type that failed on");
+        System.out.println(attrValues[i] + " provided value");
+
         FDBHelper.abortTransaction(tx);
         return StatusCode.DATA_RECORD_CREATION_ATTRIBUTE_TYPE_UNMATCHED;
       }
