@@ -42,6 +42,10 @@ public class Cursor {
 
   private String attrToParse;
   private Object threshold;
+
+  private KeyValue prevKeyValue;
+
+  private Object prevPrimaryValue;
   private KeyValue currentKeyValue;
   private Object currentPrimaryValue;
   private ComparisonOperator operator;
@@ -92,7 +96,7 @@ public class Cursor {
     currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
     System.out.println("First record value: " + currentPrimaryValue.toString());
-    System.out.println("First record value: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1).toString());
+    System.out.println("First tuple attr: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(2).toString());
   }
   private void initializeIterable()
   {
@@ -120,6 +124,9 @@ public class Cursor {
       // first object is table key, second is primaryKeyValue, third is attribute name
       List<Object> keyObjects = kvPair.getKey().getItems();
 
+      prevKeyValue = currentKeyValue;
+      prevPrimaryValue = kvPair.getKey().get(1);
+
       System.out.println("making record: " + keyObjects.get(1).toString());
 
       while (keyObjects.get(1).equals(currentPrimaryValue))
@@ -132,6 +139,7 @@ public class Cursor {
           eof = true;
           return rec;
         }
+
         currentKeyValue = iterator.next();
         kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
         keyObjects = kvPair.getKey().getItems();
@@ -183,6 +191,7 @@ public class Cursor {
       }
 
       return getNext();
+
     }
     else {
       return res;
@@ -288,13 +297,13 @@ public class Cursor {
 
   public StatusCode deleteRecord()
   {
-    FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
+    FDBKVPair kvPair = convertKeyValueToFDBKVPair(prevKeyValue);
     // first object is table key, second is primaryKeyValue, third is attribute name
     List<Object> keyObjects = kvPair.getKey().getItems();
 
     System.out.println("deleting record: " + keyObjects.get(1).toString());
 
-    while (keyObjects.get(1).equals(currentPrimaryValue))
+    while (keyObjects.get(1).equals(prevPrimaryValue))
     {
       FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, kvPair.getKey());
       // System.out.println("adding attr: " + keyObjects.get(2).toString());
