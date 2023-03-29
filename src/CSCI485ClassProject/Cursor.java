@@ -99,10 +99,10 @@ public class Cursor {
     {
       currentKeyValue = iterator.next();
       // SSN value of current record
-      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
+      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(0);
 
       System.out.println("First record value: " + currentPrimaryValue.toString());
-      System.out.println("First tuple attr: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(2).toString());
+      System.out.println("First tuple attr: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1).toString());
     }
   }
 
