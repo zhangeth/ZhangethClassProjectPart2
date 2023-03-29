@@ -95,13 +95,17 @@ public class Cursor {
 
   private void setCurrentKeyToNext()
   {
-    currentKeyValue = iterator.next();
-    // SSN value of current record
-    currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
+    if (iterator.hasNext())
+    {
+      currentKeyValue = iterator.next();
+      // SSN value of current record
+      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
-    System.out.println("First record value: " + currentPrimaryValue.toString());
-    System.out.println("First tuple attr: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(2).toString());
+      System.out.println("First record value: " + currentPrimaryValue.toString());
+      System.out.println("First tuple attr: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(2).toString());
+    }
   }
+
   private void initializeIterable()
   {
     this.iterable = cursorTx.getRange(recordsSubspace.range(), ROW_LIMIT_UNLIMITED, !goingForward);
@@ -202,7 +206,6 @@ public class Cursor {
         return res;
       }
 
-
       if (eof)
       {
         return null;
@@ -225,7 +228,7 @@ public class Cursor {
       return false;
     }
 
-    AttributeType attrType =  res.getTypeForGivenAttrName(attrToParse);
+    AttributeType attrType = res.getTypeForGivenAttrName(attrToParse);
     //attrType = RecordsHelper.getType(threshold);
 
     /*System.out.println("attrParse: " + attrToParse);
@@ -361,7 +364,7 @@ public class Cursor {
 
   private FDBKVPair convertKeyValueToFDBKVPair(KeyValue kv)
   {
-    Tuple keyTuple = Tuple.fromBytes(kv.getKey());
+    Tuple keyTuple = Tuple.fromBytes(kv.getKey()).popFront();
     Tuple valueTuple = Tuple.fromBytes(kv.getValue());
 
     return new FDBKVPair(recordsPath, keyTuple, valueTuple);
