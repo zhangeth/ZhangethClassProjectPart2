@@ -63,14 +63,14 @@ public class Cursor {
     this.iterable = cursorTx.getRange(recordsSubspace.range());
     this.iterator = iterable.iterator();
 
-    setCurrentRecord();
+    setCurrentKeyToNext();
 
     count = 0;
 
     System.out.println("Successfully made cursor");
   }
 
-  private void setCurrentRecord()
+  private void setCurrentKeyToNext()
   {
     currentKeyValue = iterator.next();
     // SSN value of current record
@@ -84,19 +84,21 @@ public class Cursor {
   {
     System.out.println("starting go to first");
     goingForward = true;
-
     // get all the keyValues that start with same primary value
-    Record rec = new Record();
+    return makeRecordFromCurrentKey();
+  }
 
+  private Record makeRecordFromCurrentKey()
+  {
+    Record rec = new Record();
     FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
 
     // first object is table key, second is primaryKeyValue, third is attribute name
-
     List<Object> keyObjects = kvPair.getKey().getItems();
 
     while (keyObjects.get(1).equals(currentPrimaryValue))
     {
-      System.out.println("Adding attr: " + keyObjects.get(1).toString());
+      System.out.println("Adding attr: " + keyObjects.get(2).toString());
 
       rec.setAttrNameAndValue((String) keyObjects.get(2), kvPair.getValue().get(0));
 
@@ -104,15 +106,10 @@ public class Cursor {
       kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
       keyObjects = kvPair.getKey().getItems();
     }
-/*    System.out.println("Tuple KeyBytes: " + kvPair.getKey().toString());
-    System.out.println("Tuple valueBytes: " + kvPair.getValue().toString());*/
-
-    // made record
-    System.out.println("Made record key: " + rec.getValueForGivenAttrName(keyObjects.get(1).toString()));
 
     return rec;
-
   }
+
 
   public Record goToLast()
   {
@@ -134,7 +131,7 @@ public class Cursor {
   {
     if (iterator.hasNext())
     {
-      setCurrentRecord();
+      //setCurrentRecord();
       //return convertFDBKVPairToRecord(convertKeyValueToFD BKVPair(kv));
     }
     // return EOF
@@ -144,7 +141,8 @@ public class Cursor {
 
   public Record getNext()
   {
-    return null;
+    setCurrentKeyToNext();
+    return makeRecordFromCurrentKey();
   }
 
   public StatusCode commit()
