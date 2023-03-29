@@ -1,5 +1,6 @@
 package CSCI485ClassProject;
 
+import CSCI485ClassProject.models.AttributeType;
 import CSCI485ClassProject.models.TableMetadata;
 import com.apple.foundationdb.Database;
 import com.apple.foundationdb.Transaction;
@@ -69,6 +70,20 @@ public class RecordsHelper {
 
         return new ArrayList<>(nonPrimaryAttrSet);
     }
+
+    public static AttributeType getType(Object value)
+    {
+        if (value instanceof Integer || value instanceof Long) {
+            return AttributeType.INT;
+        } else if (value instanceof String) {
+            return AttributeType.VARCHAR;
+        } else if (value instanceof Double) {
+            return AttributeType.DOUBLE;
+        }
+        return AttributeType.NULL;
+
+    }
+
 
 
 }

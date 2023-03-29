@@ -64,10 +64,14 @@ public class RecordsImpl implements Records{
       // need index of values to type check
       for (int i = 0; i < attrValues.length; i++)
       {
-        //if (addedAttrSet.contains(attrNames[i]))
-        // tbManager.addAttribute(tableName, s, )
+        if (addedAttrSet.contains(attrNames[i]))
+        {
+          tbManager.addAttribute(tableName, attrNames[i], RecordsHelper.getType(attrValues[i]));
+        }
       }
     }
+
+    attrMap = tbm.getAttributes();
 
     for (int i = 0; i < attrNames.length; i++)
     {
