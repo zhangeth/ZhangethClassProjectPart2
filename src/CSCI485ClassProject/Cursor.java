@@ -66,6 +66,7 @@ public class Cursor {
     currentKeyValue = iterator.next();
     currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(0);
     System.out.println("First record value: " + currentPrimaryValue.toString());
+    System.out.println("First record value: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1).toString());
 
     count = 0;
 
