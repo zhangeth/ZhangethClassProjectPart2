@@ -110,14 +110,26 @@ public class Cursor {
     goingForward = true;
     //initializeIterableAndIterator();
 
-    KeyValue keyValue = iterator.next();
+    // get all the keyValues that start with same primary value
+    Record rec = new Record();
 
+    KeyValue keyValue = iterator.next();
     FDBKVPair kvPair = convertKeyValueToFDBKVPair(keyValue);
+    List<Object> keyObjects = kvPair.getKey().getItems();
+
+    while (keyObjects.get(0).equals(currentRecord))
+    {
+      rec.setAttrNameAndValue(keyObjects.get(1).toString(), kvPair.getValue().toString());
+    }
+
 
     System.out.println("Tuple KeyBytes: " + kvPair.getKey().toString());
     System.out.println("Tuple valueBytes: " + kvPair.getValue().toString());
 
-    return convertFDBKVPairToRecord(kvPair);
+    // made record
+    System.out.println("Made record key: " + rec.getValueForGivenAttrName(keyObjects.get(1).toString()));
+
+    return rec;
 
   }
 
