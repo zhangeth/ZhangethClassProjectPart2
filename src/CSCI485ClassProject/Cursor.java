@@ -89,7 +89,13 @@ public class Cursor {
 
     List<Object> keyObjects = kvPair.getKey().getItems();
 
+    /*
     for (Object obj : keyObjects)
+    {
+      System.out.println(obj.toString() + " obj");
+    }*/
+
+    for (Object obj : kvPair.getValue().getItems())
     {
       System.out.println(obj.toString() + " obj");
     }
