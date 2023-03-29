@@ -223,7 +223,7 @@ public class Cursor {
       else if (recordValue == thresholdInt)
       {
         System.out.println("greater than");
-        if (equalToOperators.contains(operator))
+        if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO || operator == ComparisonOperator.EQUAL_TO || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
         {
           return true;
         }
@@ -250,7 +250,7 @@ public class Cursor {
       }
       else if (recordValue == thresholdDouble)
       {
-        if (equalToOperators.contains(operator))
+        if if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO || operator == ComparisonOperator.EQUAL_TO || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
           return true;
       }
       else
@@ -270,9 +270,9 @@ public class Cursor {
         if (operator == ComparisonOperator.GREATER_THAN || operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO)
           return true;
       }
-      else if (recordValue == thresholdStr)
+      else if (recordValue.equals(thresholdStr))
       {
-        if (equalToOperators.contains(operator))
+        if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO || operator == ComparisonOperator.EQUAL_TO || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
           return true;
       }
       else
