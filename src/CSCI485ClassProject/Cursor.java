@@ -197,7 +197,9 @@ public class Cursor {
   private FDBKVPair convertKeyValueToFDBKVPair(KeyValue kv)
   {
     Tuple keyTuple = Tuple.fromBytes(kv.getKey());
+    System.out.println("conversion key: " + keyTuple.get(0).toString());
     Tuple valueTuple = Tuple.fromBytes(kv.getValue());
+    System.out.println("conversion value: " + valueTuple.get(0).toString());
 
     return new FDBKVPair(recordsPath, keyTuple, valueTuple);
   }
