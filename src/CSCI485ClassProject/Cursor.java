@@ -122,6 +122,7 @@ public class Cursor {
   {
     if (!eof)
     {
+      //if (FDBHelper.getCertainKeyValuePairInSubdirectory(cursorTx, ))
       Record rec = new Record();
       FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
 
@@ -158,6 +159,8 @@ public class Cursor {
 
       currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
+      System.out.println(rec.getValueForGivenAttrName("SSN") + " obtained ssn");
+
       return rec;
     }
 
@@ -178,6 +181,7 @@ public class Cursor {
 
   public Record getNext()
   {
+    // add check for thing
     Record res = makeRecordFromCurrentKey();
     if (res == null)
     {
@@ -225,7 +229,7 @@ public class Cursor {
     //compare ints
     if (attrType == AttributeType.INT)
     {
-      //System.out.println("Entered int block");
+      System.out.println("Entered int block");
       Integer recordValue = Integer.valueOf(res.getValueForGivenAttrName(attrToParse).toString());
       Integer thresholdInt = Integer.valueOf(threshold.toString());
 
@@ -241,9 +245,10 @@ public class Cursor {
       }
       else if (recordValue == thresholdInt)
       {
-        // System.out.println("greater than");
+
         if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO || operator == ComparisonOperator.EQUAL_TO || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
         {
+          System.out.println("equal to found");
           return true;
         }
       }
@@ -254,6 +259,7 @@ public class Cursor {
         {
           return true;
         }
+        return false;
       }
     }
     // compare doubles
@@ -276,6 +282,7 @@ public class Cursor {
       {
         if (operator == ComparisonOperator.LESS_THAN || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
           return true;
+        return false;
       }
     }
     // compare strings
@@ -299,6 +306,7 @@ public class Cursor {
       {
         if (operator == ComparisonOperator.LESS_THAN || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
           return true;
+        return false;
       }
     }
 
@@ -348,6 +356,10 @@ public class Cursor {
   {
     Tuple keyTuple = Tuple.fromBytes(kv.getKey());
     Tuple valueTuple = Tuple.fromBytes(kv.getValue());
+    if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordsSubspace, cursorTx, keyTuple, recordsPath) == null)
+    {
+      return null;
+    }
 
     return new FDBKVPair(recordsPath, keyTuple, valueTuple);
   }
