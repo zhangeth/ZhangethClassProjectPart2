@@ -305,10 +305,19 @@ public class Cursor {
 
   public StatusCode deleteRecord()
   {
-    for (FDBKVPair p : currentRecord)
+    if (currentRecord != null)
     {
-      FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, p.getKey());
+      System.out.println("deleting: " + currentRecord.get(0).getKey().get(0).toString());
+      for (FDBKVPair p : currentRecord)
+      {
+        FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, p.getKey());
+      }
+
     }
+    else {
+      System.out.println("curr record is null: ");
+    }
+
     // set to next key
 
     //currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
