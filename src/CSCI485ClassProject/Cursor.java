@@ -64,7 +64,9 @@ public class Cursor {
     this.iterator = iterable.iterator();
 
     currentKeyValue = iterator.next();
-    currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(0);
+    // SSN value of current record
+    currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
+
     System.out.println("First record value: " + currentPrimaryValue.toString());
     System.out.println("First record value: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1).toString());
 
@@ -73,56 +75,17 @@ public class Cursor {
     System.out.println("Successfully made cursor");
   }
 
-  /*
-  private void initializeIterableAndIterator()
-  {
-    this.iterable = cursorTx.getRange(startBytes, endBytes, readLimit, !goingForward);
-    this.iterator = iterable.iterator();
-  }
-  */
-
-  /*
-  private void initializeAttrList()
-  {
-    TableMetadataTransformer tbmTransformer = new TableMetadataTransformer(tableName);
-    List<String> attrPath = tbmTransformer.getTableAttributeStorePath();
-    List<FDBKVPair> attrs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, cursorTx, attrPath);
-
-    for (FDBKVPair p : attrs)
-    {
-      String rawString = p.getKey().toString();
-      String attrName = rawString.substring(2, rawString.length() - 2);
-
-      if (!tbm.getPrimaryKeysAsSet().contains(attrName))
-      {
-        attrNamesInOrder.add(attrName);
-        System.out.println("Adding: " + String.valueOf(attrName + " to np Keys in order"));
-      }
-      // primary keys
-      else {
-        primaryKeysInOrder.add(attrName);
-        System.out.println("Adding: " + String.valueOf(attrName + " to primaryKeys in order"));
-      }
-    }
-
-   for (String s : tbm.getPrimaryKeys())
-    {
-      System.out.println("primary key strings " + s);
-    }
-  }
-  */
   public Record goToFirst()
   {
     System.out.println("starting go to first");
     goingForward = true;
-    //initializeIterableAndIterator();
 
     // get all the keyValues that start with same primary value
     Record rec = new Record();
 
     FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
 
-    // printing tuple
+    // first object is table key, second is primaryKeyValue, third is attribute name
 
     List<Object> keyObjects = kvPair.getKey().getItems();
 
