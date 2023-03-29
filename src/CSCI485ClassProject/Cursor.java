@@ -99,10 +99,10 @@ public class Cursor {
     {
       currentKeyValue = iterator.next();
       // SSN value of current record
-      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(0);
+      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
       System.out.println("First record value: " + currentPrimaryValue.toString());
-      System.out.println("First tuple attr: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1).toString());
+      System.out.println("First tuple attr: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(2).toString());
     }
   }
 
@@ -134,17 +134,17 @@ public class Cursor {
       List<Object> keyObjects = kvPair.getKey().getItems();
 
       prevKeyValue = currentKeyValue;
-      prevPrimaryValue = kvPair.getKey().get(0);
+      prevPrimaryValue = kvPair.getKey().get(1);
 
       List<FDBKVPair> newRecord = new ArrayList<>();
 
-      System.out.println("making record: " + keyObjects.get(0).toString());
+      System.out.println("making record: " + keyObjects.get(1).toString());
 
       while (keyObjects.get(1).equals(currentPrimaryValue))
       {
         newRecord.add(kvPair);
 
-        rec.setAttrNameAndValue((String) keyObjects.get(1), kvPair.getValue().get(0));
+        rec.setAttrNameAndValue((String) keyObjects.get(2), kvPair.getValue().get(0));
         // System.out.println("adding attr: " + keyObjects.get(2).toString());
         if (!iterator.hasNext())
         {
@@ -161,7 +161,7 @@ public class Cursor {
       currentRecord = newRecord;
       // set to next key
 
-      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(0);
+      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
       for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
       {
@@ -324,10 +324,9 @@ public class Cursor {
   {
     if (currentRecord != null)
     {
-      System.out.println("deleting: " + currentRecord.get(0).getKey().get(0).toString());
+      System.out.println("deleting: " + currentRecord.get(0).getKey().get(1).toString());
       for (FDBKVPair p : currentRecord)
       {
-
         System.out.println("deleting attr: " + p.getKey().get(1).toString());
         FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, p.getKey());
       }
@@ -365,7 +364,7 @@ public class Cursor {
 
   private FDBKVPair convertKeyValueToFDBKVPair(KeyValue kv)
   {
-    Tuple keyTuple = Tuple.fromBytes(kv.getKey()).popFront();
+    Tuple keyTuple = Tuple.fromBytes(kv.getKey());
     Tuple valueTuple = Tuple.fromBytes(kv.getValue());
 
     return new FDBKVPair(recordsPath, keyTuple, valueTuple);
