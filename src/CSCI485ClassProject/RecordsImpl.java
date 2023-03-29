@@ -104,10 +104,11 @@ public class RecordsImpl implements Records{
       }
     }
 
-    if (!RecordsHelper.areAttributesValid(attrNames, tbm))
+    if (!RecordsHelper.areAttributesValid(attrNames, tbm) && addedAttrSet.isEmpty())
     {
       return StatusCode.DATA_RECORD_CREATION_ATTRIBUTES_INVALID;
     }
+
     tx.close();
     // start creating record: make records subdir under table dir
     Transaction createTX = FDBHelper.openTransaction(db);
