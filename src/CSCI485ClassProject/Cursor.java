@@ -163,6 +163,7 @@ public class Cursor {
 
     if (operator != null)
     {
+      System.out.println(res.getMapAttrNameToValue().toString());
       if (satisfiesOperator(res))
         return res;
 
