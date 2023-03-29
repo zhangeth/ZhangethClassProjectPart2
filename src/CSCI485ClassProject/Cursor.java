@@ -161,7 +161,7 @@ public class Cursor {
 
       for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
       {
-        System.out.println("found rec attr: " + e.getKey() + " value: " + e.getValue());
+        System.out.println("found rec attr: " + e.getKey() + " value: " + e.getValue().toString());
       }
       //System.out.println(rec.getValueForGivenAttrName("SSN") + " obtained ssn");
 
@@ -347,6 +347,9 @@ public class Cursor {
     try
     {
       FDBHelper.commitTransaction(cursorTx);
+      mode = null;
+      iterator = null;
+      mode = null;
     }
     catch (Exception e)
     {
