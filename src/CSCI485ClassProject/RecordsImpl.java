@@ -82,10 +82,10 @@ public class RecordsImpl implements Records{
       }
     }
 
-    for (String s: attrMap.keySet())
+    /*for (String s: attrMap.keySet())
     {
       System.out.println(s + " attributes in thingy");
-    }
+    }*/
 
     for (int i = 0; i < attrNames.length; i++)
     {

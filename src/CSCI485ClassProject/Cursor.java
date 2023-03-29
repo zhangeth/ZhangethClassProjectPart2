@@ -1,5 +1,6 @@
 package CSCI485ClassProject;
 
+import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.Record;
 import CSCI485ClassProject.models.TableMetadata;
 import com.apple.foundationdb.Database;
@@ -30,17 +31,17 @@ public class Cursor {
   private String tableName;
   private List<String> recordsPath;
   private Mode mode;
-  private final int readLimit = 3;
 
-  private int count;
-
+  private String attrToParse;
+  private Object threshold;
   private KeyValue currentKeyValue;
-
   private Object currentPrimaryValue;
+  private ComparisonOperator operator;
   private AsyncIterable<KeyValue> iterable;
   private AsyncIterator<KeyValue> iterator;
   private boolean goingForward;
   private boolean eof = false;
+  private boolean isUsingIndex = false;
 
   // your code here cursor table it's bound to, starting point, current point
   // constructor
@@ -65,6 +66,16 @@ public class Cursor {
 
     System.out.println("Successfully made cursor");
   }
+
+  Cursor(String tableName, String attrToParse, Object threshold, ComparisonOperator operator, Cursor.Mode mode, boolean isUsingIndex, Database db)
+  {
+      this(tableName, mode, db);
+      this.isUsingIndex = isUsingIndex;
+      this.attrToParse = attrToParse;
+      this.threshold = threshold;
+      this.operator = operator;
+  }
+
 
   private void setCurrentKeyToNext()
   {
@@ -143,6 +154,18 @@ public class Cursor {
 
   public Record getNext()
   {
+    Record res = makeRecordFromCurrentKey();
+
+    if (operator != null)
+    {
+      if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO)
+      {
+        // get type of butt crack
+      /*  res.getTypeForGivenAttrName(attrN)
+        if (res.getValueForGivenAttrName(attrToParse) >= Integer.valueOf(threshold.toString()))
+        ;*/
+      }
+    }
     return makeRecordFromCurrentKey();
   }
 

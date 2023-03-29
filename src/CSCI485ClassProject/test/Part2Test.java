@@ -218,7 +218,7 @@ public class Part2Test {
    * Points: 15
    */
 
-  /*
+
   @Test
   public void unitTest4() {
     // use cursor to select the record with given name, and verify the correctness
@@ -252,7 +252,7 @@ public class Part2Test {
     assertEquals(StatusCode.SUCCESS, records.commitCursor(cursor));
     System.out.println("Test4 passed!");
   }
-  */
+
 
   /**
    * Points: 15
