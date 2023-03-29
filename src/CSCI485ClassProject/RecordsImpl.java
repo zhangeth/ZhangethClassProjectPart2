@@ -109,10 +109,10 @@ public class RecordsImpl implements Records{
       if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordSubspace, createTX, keyTuple, recordsPath) == null)
       {
         FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, keyTuple, valueTuple));
-
-        FDBHelper.commitTransaction(createTX);
       }
     }
+
+    FDBHelper.commitTransaction(createTX);
 
 
     // commit key and value tuples to db
