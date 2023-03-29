@@ -126,7 +126,6 @@ public class Cursor {
   {
     if (!eof)
     {
-      //if (FDBHelper.getCertainKeyValuePairInSubdirectory(cursorTx, ))
       Record rec = new Record();
       FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
 
@@ -145,7 +144,7 @@ public class Cursor {
         newRecord.add(kvPair);
 
         rec.setAttrNameAndValue((String) keyObjects.get(2), kvPair.getValue().get(0));
-        // System.out.println("adding attr: " + keyObjects.get(2).toString());
+
         if (!iterator.hasNext())
         {
           System.out.println("reached EOF");
@@ -162,12 +161,6 @@ public class Cursor {
       // set to next key
 
       currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
-
-      /*for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
-      {
-        System.out.println("found rec attr: " + e.getKey() + " value: " + e.getValue().toString());
-      }*/
-      //System.out.println(rec.getValueForGivenAttrName("SSN") + " obtained ssn");
 
       return rec;
     }
@@ -198,11 +191,8 @@ public class Cursor {
 
     if (operator != null)
     {
-      //System.out.println(res.getMapAttrNameToValue().toString());
       if (satisfiesOperator(res))
       {
-        System.out.print("returning: " + res.getValueForGivenAttrName("SSN"));
-        //System.out.println();
         return res;
       }
 
@@ -231,22 +221,15 @@ public class Cursor {
     AttributeType attrType = res.getTypeForGivenAttrName(attrToParse);
     //attrType = RecordsHelper.getType(threshold);
 
-    /*System.out.println("attrParse: " + attrToParse);
-    System.out.println("type of attrPars: " + attrType.toString());*/
     //compare ints
     if (attrType == AttributeType.INT)
     {
-      System.out.println("Entered int block");
       Integer recordValue = Integer.valueOf(res.getValueForGivenAttrName(attrToParse).toString());
       Integer thresholdInt = Integer.valueOf(threshold.toString());
 
-      // System.out.println("recordVal: " + recordValue + " threshold: " + thresholdInt);
-
       if (recordValue > thresholdInt) {
-        // System.out.println("greater than");
         if (operator == ComparisonOperator.GREATER_THAN || operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO)
         {
-          // System.out.println("returning true");
           return true;
         }
       }
@@ -255,13 +238,11 @@ public class Cursor {
 
         if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO || operator == ComparisonOperator.EQUAL_TO || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
         {
-          System.out.println("equal to found");
           return true;
         }
       }
       else
       {
-        // System.out.println("greater than");
         if (operator == ComparisonOperator.LESS_THAN || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
         {
           return true;
@@ -272,7 +253,6 @@ public class Cursor {
     // compare doubles
     else if (attrType == AttributeType.DOUBLE)
     {
-      System.out.println("Entered double block");
       Double recordValue = Double.valueOf(res.getValueForGivenAttrName(attrToParse).toString());
       Double thresholdDouble = Double.valueOf(threshold.toString());
 
@@ -294,7 +274,6 @@ public class Cursor {
     }
     // compare strings
     else {
-      // System.out.println("Entered string block");
 
       String recordValue = res.getValueForGivenAttrName(attrToParse).toString();
       String thresholdStr = threshold.toString();
@@ -324,10 +303,8 @@ public class Cursor {
   {
     if (currentRecord != null)
     {
-      //System.out.println("deleting: " + currentRecord.get(0).getKey().get(1).toString());
       for (FDBKVPair p : currentRecord)
       {
-        //System.out.println("deleting attr: " + p.getKey().get(1).toString());
         FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, p.getKey());
       }
 
@@ -335,10 +312,6 @@ public class Cursor {
     else {
       System.out.println("curr record is null: ");
     }
-
-    // set to next key
-
-    //currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
     return StatusCode.SUCCESS;
   }
