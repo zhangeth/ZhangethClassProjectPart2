@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.apple.foundationdb.ReadTransaction.ROW_LIMIT_UNLIMITED;
+
 public class Cursor {
   public enum Mode {
     READ,
@@ -61,13 +63,6 @@ public class Cursor {
     // by default start at beginning of records
     goingForward = true;
 
-    this.iterable = cursorTx.getRange(recordsSubspace.range());
-    this.iterator = iterable.iterator();
-
-    setCurrentKeyToNext();
-
-    count = 0;
-
     System.out.println("Successfully made cursor");
   }
 
@@ -80,11 +75,19 @@ public class Cursor {
     System.out.println("First record value: " + currentPrimaryValue.toString());
     System.out.println("First record value: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1).toString());
   }
+  private void initializeIterable()
+  {
+    this.iterable = cursorTx.getRange(recordsSubspace.range(), ROW_LIMIT_UNLIMITED, !goingForward);
+    this.iterator = iterable.iterator();
+
+    setCurrentKeyToNext();
+  }
 
   public Record goToFirst()
   {
     System.out.println("starting go to first");
     goingForward = true;
+    initializeIterable();
     // get all the keyValues that start with same primary value
     return makeRecordFromCurrentKey();
   }
@@ -129,17 +132,8 @@ public class Cursor {
   public Record goToLast()
   {
     goingForward = false;
-
-    //initializeIterableAndIterator();
-
-    KeyValue keyValue = iterator.next();
-
-    FDBKVPair kvPair = convertKeyValueToFDBKVPair(keyValue);
-
-    System.out.println("Tuple KeyBytes: " + kvPair.getKey().toString());
-    System.out.println("Tuple valueBytes: " + kvPair.getValue().toString());
-
-    return convertFDBKVPairToRecord(kvPair);
+    initializeIterable();
+    return makeRecordFromCurrentKey();
   }
 
   public Record getPrev()
