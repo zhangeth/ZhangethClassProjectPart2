@@ -97,9 +97,23 @@ public class RecordsImpl implements Records{
 
     // make key and value tuple for each attribute, with each key having the value of the primary key first
     Object primaryValue = primaryKeysValues[0];
+    // add primary Keys first
+    for (int i = 0; i < primaryKeys.length; i++)
+    {
+      Tuple keyTuple = new Tuple().addObject(primaryValue);
+      keyTuple = keyTuple.addObject(primaryKeys[i]);
+
+      Tuple valueTuple = new Tuple().addObject(primaryKeysValues[0]);
+
+      if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordSubspace, createTX, keyTuple, recordsPath) == null)
+      {
+        FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, keyTuple, valueTuple));
+      }
+    }
+
     for (int i = 0; i < attrNames.length; i++)
     {
-      System.out.println("attrName: " + attrNames[i]);
+      //System.out.println("attrName: " + attrNames[i]);
       Tuple keyTuple = new Tuple().addObject(primaryValue);
       keyTuple = keyTuple.addObject(attrNames[i]);
 
