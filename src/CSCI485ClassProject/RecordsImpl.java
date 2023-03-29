@@ -55,8 +55,8 @@ public class RecordsImpl implements Records{
 
     // add attributes that don't exist
     TableManagerImpl tbManager = new TableManagerImpl();
-    System.out.println("length of names: " + attrNames.length);
-    System.out.println("length of map: " + (attrMap.keySet().size() - tbm.getPrimaryKeys().size()));
+/*    System.out.println("length of names: " + attrNames.length);
+    System.out.println("length of map: " + (attrMap.keySet().size() - tbm.getPrimaryKeys().size()));*/
 
     Set<String> addedAttrSet = new HashSet<>();
 
@@ -66,10 +66,10 @@ public class RecordsImpl implements Records{
       addedAttrSet = new HashSet<>(Arrays.asList(attrNames));
       // add attributes that don't exist
       addedAttrSet.removeAll(attrMap.keySet());
-      for (String s : addedAttrSet)
+/*      for (String s : addedAttrSet)
       {
         System.out.println(" to b added: " + s);
-      }
+      }*/
 
       // need index of values to type check
       for (int i = 0; i < attrValues.length; i++)
