@@ -63,16 +63,21 @@ public class Cursor {
     this.iterable = cursorTx.getRange(recordsSubspace.range());
     this.iterator = iterable.iterator();
 
+    setCurrentRecord();
+
+    count = 0;
+
+    System.out.println("Successfully made cursor");
+  }
+
+  private void setCurrentRecord()
+  {
     currentKeyValue = iterator.next();
     // SSN value of current record
     currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
     System.out.println("First record value: " + currentPrimaryValue.toString());
     System.out.println("First record value: " + convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1).toString());
-
-    count = 0;
-
-    System.out.println("Successfully made cursor");
   }
 
   public Record goToFirst()
@@ -89,18 +94,7 @@ public class Cursor {
 
     List<Object> keyObjects = kvPair.getKey().getItems();
 
-    /*
-    for (Object obj : keyObjects)
-    {
-      System.out.println(obj.toString() + " obj");
-    }*/
-
-    for (Object obj : kvPair.getValue().getItems())
-    {
-      System.out.println(obj.toString() + " obj");
-    }
-
-    while (keyObjects.get(0).equals(currentPrimaryValue))
+    while (keyObjects.get(1).equals(currentPrimaryValue))
     {
       System.out.println("Adding attr: " + keyObjects.get(1).toString());
 
@@ -110,10 +104,8 @@ public class Cursor {
       kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
       keyObjects = kvPair.getKey().getItems();
     }
-
-
-    System.out.println("Tuple KeyBytes: " + kvPair.getKey().toString());
-    System.out.println("Tuple valueBytes: " + kvPair.getValue().toString());
+/*    System.out.println("Tuple KeyBytes: " + kvPair.getKey().toString());
+    System.out.println("Tuple valueBytes: " + kvPair.getValue().toString());*/
 
     // made record
     System.out.println("Made record key: " + rec.getValueForGivenAttrName(keyObjects.get(1).toString()));
@@ -142,9 +134,8 @@ public class Cursor {
   {
     if (iterator.hasNext())
     {
-
-
-      //return convertFDBKVPairToRecord(convertKeyValueToFDBKVPair(kv));
+      setCurrentRecord();
+      //return convertFDBKVPairToRecord(convertKeyValueToFD BKVPair(kv));
     }
     // return EOF
     System.out.println("cursor reached EOF");
@@ -173,9 +164,7 @@ public class Cursor {
   private FDBKVPair convertKeyValueToFDBKVPair(KeyValue kv)
   {
     Tuple keyTuple = Tuple.fromBytes(kv.getKey());
-    System.out.println("conversion key: " + keyTuple.get(0).toString());
     Tuple valueTuple = Tuple.fromBytes(kv.getValue());
-    System.out.println("conversion value: " + valueTuple.get(0).toString());
 
     return new FDBKVPair(recordsPath, keyTuple, valueTuple);
   }
