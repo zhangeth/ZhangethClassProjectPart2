@@ -90,18 +90,26 @@ public class Cursor {
 
   private Record makeRecordFromCurrentKey()
   {
+
     Record rec = new Record();
     FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
 
     // first object is table key, second is primaryKeyValue, third is attribute name
     List<Object> keyObjects = kvPair.getKey().getItems();
 
+    System.out.println("makin record: " + keyObjects.get(1).toString());
+
     while (keyObjects.get(1).equals(currentPrimaryValue))
     {
-      System.out.println("Adding attr: " + keyObjects.get(2).toString());
+      //System.out.println("Adding attr: " + keyObjects.get(2).toString());
 
       rec.setAttrNameAndValue((String) keyObjects.get(2), kvPair.getValue().get(0));
 
+      if (!iterator.hasNext())
+      {
+        System.out.println("reached EOF");
+        return null;
+      }
       currentKeyValue = iterator.next();
       kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
       keyObjects = kvPair.getKey().getItems();
