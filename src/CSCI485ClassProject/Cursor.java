@@ -250,7 +250,7 @@ public class Cursor {
       }
       else if (recordValue == thresholdDouble)
       {
-        if if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO || operator == ComparisonOperator.EQUAL_TO || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
+        if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO || operator == ComparisonOperator.EQUAL_TO || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
           return true;
       }
       else
