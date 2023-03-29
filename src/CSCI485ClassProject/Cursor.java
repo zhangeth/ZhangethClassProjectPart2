@@ -27,18 +27,14 @@ public class Cursor {
   private Transaction cursorTx;
   private String tableName;
   private List<String> recordsPath;
-  private TableMetadata tbm;
   private Mode mode;
   private final int readLimit = 3;
 
   private int count;
 
-  byte[] startBytes;
-  byte[] endBytes;
+  private Object currentRecord;
   private AsyncIterable<KeyValue> iterable;
   private AsyncIterator<KeyValue> iterator;
-  private List<String> attrNamesInOrder;
-  private List<String> primaryKeysInOrder;
   private boolean goingForward;
 
   // your code here cursor table it's bound to, starting point, current point
@@ -61,33 +57,24 @@ public class Cursor {
     recordsSubspace = FDBHelper.createOrOpenSubspace(cursorTx, recordsPath);
     // by default start at beginning of records
     goingForward = true;
-    // make table meta data object for ease of access
-    tbm = RecordsHelper.convertNameToTableMetaData(db, cursorTx, tableName);
-    attrNamesInOrder = new ArrayList<>();
-    primaryKeysInOrder = new ArrayList<>();
 
-    // initialize order of attributes
-    initializeAttrList();
-
-    // initialize iterable over range of keys in subspace
-    this.startBytes = recordsSubspace.pack();
-    this.endBytes = recordsSubspace.range().end;
+    this.iterable = cursorTx.getRange(recordsSubspace.range());
+    this.iterator = iterable.iterator();
 
     count = 0;
-
-    // needs to initialize iterable through either goToFirst or goToLast
-    this.startBytes = recordsSubspace.pack();
-    this.endBytes = recordsSubspace.range().end;
 
     System.out.println("Successfully made cursor");
   }
 
+  /*
   private void initializeIterableAndIterator()
   {
     this.iterable = cursorTx.getRange(startBytes, endBytes, readLimit, !goingForward);
     this.iterator = iterable.iterator();
   }
+  */
 
+  /*
   private void initializeAttrList()
   {
     TableMetadataTransformer tbmTransformer = new TableMetadataTransformer(tableName);
@@ -111,17 +98,17 @@ public class Cursor {
       }
     }
 
-/*    for (String s : tbm.getPrimaryKeys())
+   for (String s : tbm.getPrimaryKeys())
     {
       System.out.println("primary key strings " + s);
-    }*/
+    }
   }
-
+  */
   public Record goToFirst()
   {
     System.out.println("starting go to first");
     goingForward = true;
-    initializeIterableAndIterator();
+    //initializeIterableAndIterator();
 
     KeyValue keyValue = iterator.next();
 
@@ -138,7 +125,7 @@ public class Cursor {
   {
     goingForward = false;
 
-    initializeIterableAndIterator();
+    //initializeIterableAndIterator();
 
     KeyValue keyValue = iterator.next();
 
@@ -154,22 +141,9 @@ public class Cursor {
   {
     if (iterator.hasNext())
     {
-      KeyValue kv = iterator.next();
-      count++;
-      // load next keys if not at end of subdir yet
-      if (count >= (readLimit - 1))
-      {
-        //System.out.println("triggered");
-        Tuple lastKey = recordsSubspace.unpack(kv.getKey());
-        endBytes = recordsSubspace.pack(lastKey);
 
-        iterable = cursorTx.getRange(startBytes, endBytes, readLimit, !goingForward);
-        iterator = iterable.iterator();
 
-        count = 0;
-      }
-
-      return convertFDBKVPairToRecord(convertKeyValueToFDBKVPair(kv));
+      //return convertFDBKVPairToRecord(convertKeyValueToFDBKVPair(kv));
     }
     // return EOF
     System.out.println("cursor reached EOF");
@@ -178,26 +152,6 @@ public class Cursor {
 
   public Record getNext()
   {
-    if (iterator.hasNext())
-    {
-      KeyValue kv = iterator.next();
-      count++;
-      // load next keys if not at end of subdir yet
-      if (count >= (readLimit - 1) && ByteArrayUtil.compareUnsigned(startBytes, endBytes) < 0)
-      {
-        Tuple lastKey = recordsSubspace.unpack(kv.getKey());
-        startBytes = recordsSubspace.pack(lastKey);
-
-        iterable = cursorTx.getRange(startBytes, endBytes, readLimit, !goingForward);
-        iterator = iterable.iterator();
-        iterator.next();
-
-        count = 0;
-      }
-      return convertFDBKVPairToRecord(convertKeyValueToFDBKVPair(kv));
-    }
-    // return EOF
-    System.out.println("cursor reached EOF");
     return null;
   }
 
@@ -224,38 +178,6 @@ public class Cursor {
   private Record convertFDBKVPairToRecord(FDBKVPair kv)
   {
     Record rec = new Record();
-    // convert according to type
-    Tuple keyTuple = kv.getKey();
-    Tuple valueTuple = kv.getValue();
-
-    /*System.out.println(keyTuple.toString() + "  record key");
-    System.out.println(valueTuple.toString() + " Value"); */
-
-    List<Object> pkValues = keyTuple.getItems();
-    List<Object> values = valueTuple.getItems();
-
-    // add primary keys
-    for (int i = 0; i < primaryKeysInOrder.size(); i++)
-    {
-      rec.setAttrNameAndValue(primaryKeysInOrder.get(i), pkValues.get(primaryKeysInOrder.size() - 1 - i));
-      //System.out.println("primaryKeys printing: " + primaryKeysInOrder.get(i) + " from values read: " + pkValues.get(primaryKeysInOrder.size() - 1 - i));
-    }
-    // add non-primary attributes
-    for (int i = 0; i < attrNamesInOrder.size(); i++)
-    {
-      rec.setAttrNameAndValue(attrNamesInOrder.get(i), values.get(attrNamesInOrder.size() - 1 - i));
-    }
-/*    System.out.println("ssn: " + String.valueOf(rec.getValueForGivenAttrName("SSN")));
-
-    System.out.println("Name: " + String.valueOf(rec.getValueForGivenAttrName("Name")));
-
-    for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
-    {
-      System.out.println(e.getKey() + " rec Key");
-      System.out.println(e.getValue().toString() + " rec Val");
-    }*/
-    // check record
-
     return rec;
   }
 

@@ -114,16 +114,11 @@ public class RecordsImpl implements Records{
 
     FDBHelper.commitTransaction(createTX);
 
-
-    // commit key and value tuples to db
-    // check if key exists
-
-
     createTX.close();
     //ts.close();
     // print existing records
 
-    Transaction readTx = db.createTransaction();
+    /*Transaction readTx = db.createTransaction();
     System.out.println(("before print"));
     try {
       List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTx, recordsPath);
@@ -146,7 +141,7 @@ public class RecordsImpl implements Records{
     }
     System.out.println(("after print"));
 
-    readTx.close();
+    readTx.close();*/
 
     return StatusCode.SUCCESS;
   }

@@ -111,7 +111,7 @@ public class Part2Test {
    * Points: 15
    */
 
-  /*
+
   @Test
   public void unitTest2() {
     Cursor cursor = records.openCursor(EmployeeTableName, Cursor.Mode.READ);
@@ -174,7 +174,7 @@ public class Part2Test {
     assertEquals(-1, ssn);
     System.out.println("Test2 passed!");
   }
-  */
+
   /**
    * Points: 15
    */
