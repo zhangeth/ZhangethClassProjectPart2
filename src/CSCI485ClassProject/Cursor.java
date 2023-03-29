@@ -122,7 +122,14 @@ public class Cursor {
 
     FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
 
+    // printing tuple
+
     List<Object> keyObjects = kvPair.getKey().getItems();
+
+    for (Object obj : keyObjects)
+    {
+      System.out.println(obj.toString() + " obj");
+    }
 
     while (keyObjects.get(0).equals(currentPrimaryValue))
     {
