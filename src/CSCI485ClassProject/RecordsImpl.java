@@ -58,10 +58,12 @@ public class RecordsImpl implements Records{
     System.out.println("length of names: " + attrNames.length);
     System.out.println("length of map: " + (attrMap.keySet().size() - tbm.getPrimaryKeys().size()));
 
+    Set<String> addedAttrSet = new HashSet<>();
+
     if (attrNames.length > (attrMap.keySet().size() - tbm.getPrimaryKeys().size()))
     {
       System.out.println("entered adding attributes");
-      Set<String> addedAttrSet = new HashSet<>(Arrays.asList(attrNames));
+      addedAttrSet = new HashSet<>(Arrays.asList(attrNames));
       // add attributes that don't exist
       addedAttrSet.removeAll(attrMap.keySet());
       for (String s : addedAttrSet)
@@ -79,8 +81,6 @@ public class RecordsImpl implements Records{
         }
       }
     }
-    tbm = RecordsHelper.convertNameToTableMetaData(db, tx, tableName);
-    attrMap = tbm.getAttributes();
 
     for (String s: attrMap.keySet())
     {
@@ -90,9 +90,10 @@ public class RecordsImpl implements Records{
     for (int i = 0; i < attrNames.length; i++)
     {
       AttributeType attrType = attrMap.get(attrNames[i]);
-      if (    !(attrType == AttributeType.INT && (attrValues[i] instanceof Integer || attrValues[i] instanceof Long)) &&
+      if ((!addedAttrSet.contains(attrNames[i])) ||
+              (!(attrType == AttributeType.INT && (attrValues[i] instanceof Integer || attrValues[i] instanceof Long)) &&
               !(attrType == AttributeType.VARCHAR && attrValues[i] instanceof String) &&
-              !(attrType == AttributeType.DOUBLE && (attrValues[i] instanceof Double))
+              !(attrType == AttributeType.DOUBLE && (attrValues[i] instanceof Double)))
           )
       {
         System.out.println(attrType.toString() + " type that failed on");
