@@ -301,6 +301,15 @@ public class Cursor {
     // first object is table key, second is primaryKeyValue, third is attribute name
     List<Object> keyObjects = kvPair.getKey().getItems();
 
+    AsyncIterator<KeyValue> copyIterator = iterable.iterator();
+    while(copyIterator.next() != prevKeyValue)
+    {
+      copyIterator.next();
+    }
+    KeyValue kv = copyIterator.next();
+    System.out.println("copy kv: " + kv.getKey().toString());
+    System.out.println("start of delete key " + prevKeyValue.getKey().toString());
+
     System.out.println("deleting record: " + keyObjects.get(1).toString());
 
     while (keyObjects.get(1).equals(prevPrimaryValue))
