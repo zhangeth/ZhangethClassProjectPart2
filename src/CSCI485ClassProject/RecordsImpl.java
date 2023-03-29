@@ -67,6 +67,7 @@ public class RecordsImpl implements Records{
         if (addedAttrSet.contains(attrNames[i]))
         {
           tbManager.addAttribute(tableName, attrNames[i], RecordsHelper.getType(attrValues[i]));
+          System.out.println("Added attribute: " + attrNames[i]);
         }
       }
     }
