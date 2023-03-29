@@ -128,7 +128,7 @@ public class Cursor {
     {
       System.out.println("Adding attr: " + keyObjects.get(1).toString());
 
-      rec.setAttrNameAndValue(keyObjects.get(1).toString(), kvPair.getValue());
+      rec.setAttrNameAndValue((String) keyObjects.get(1), kvPair.getValue().get(0));
 
       currentKeyValue = iterator.next();
       kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
@@ -196,8 +196,10 @@ public class Cursor {
 
   private FDBKVPair convertKeyValueToFDBKVPair(KeyValue kv)
   {
-    Tuple keyTuple = recordsSubspace.unpack(kv.getKey());
-    return FDBHelper.getCertainKeyValuePairInSubdirectory(recordsSubspace, cursorTx, keyTuple, recordsPath);
+    Tuple keyTuple = Tuple.fromBytes(kv.getKey());
+    Tuple valueTuple = Tuple.fromBytes(kv.getValue());
+
+    return new FDBKVPair(recordsPath, keyTuple, valueTuple);
   }
 
   private Record convertFDBKVPairToRecord(FDBKVPair kv)
