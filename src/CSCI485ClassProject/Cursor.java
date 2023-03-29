@@ -15,6 +15,7 @@ import com.apple.foundationdb.tuple.ByteArrayUtil;
 import jdk.internal.dynalink.linker.ConversionComparator;
 
 
+import java.security.Key;
 import java.sql.Array;
 import java.util.*;
 
@@ -301,7 +302,9 @@ public class Cursor {
     // first object is table key, second is primaryKeyValue, third is attribute name
     List<Object> keyObjects = kvPair.getKey().getItems();
 
-    AsyncIterator<KeyValue> copyIterator = iterable.iterator();
+    AsyncIterable<KeyValue> iterable1 = cursorTx.getRange(recordsSubspace.range(), ROW_LIMIT_UNLIMITED, !goingForward);
+    AsyncIterator<KeyValue> copyIterator = iterable1.iterator();
+
     while(!copyIterator.next().equals(prevKeyValue))
     {
       copyIterator.next();
