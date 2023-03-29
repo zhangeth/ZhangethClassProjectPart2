@@ -163,10 +163,10 @@ public class Cursor {
 
       currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
-      for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
+      /*for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
       {
         System.out.println("found rec attr: " + e.getKey() + " value: " + e.getValue().toString());
-      }
+      }*/
       //System.out.println(rec.getValueForGivenAttrName("SSN") + " obtained ssn");
 
       return rec;
@@ -324,10 +324,10 @@ public class Cursor {
   {
     if (currentRecord != null)
     {
-      System.out.println("deleting: " + currentRecord.get(0).getKey().get(1).toString());
+      //System.out.println("deleting: " + currentRecord.get(0).getKey().get(1).toString());
       for (FDBKVPair p : currentRecord)
       {
-        System.out.println("deleting attr: " + p.getKey().get(1).toString());
+        //System.out.println("deleting attr: " + p.getKey().get(1).toString());
         FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, p.getKey());
       }
 
