@@ -317,7 +317,7 @@ public class Cursor {
 
     // KeyValue kv = copyIterator.next();
     System.out.println("copy kv: " + p.getKey().toString());
-    System.out.println("start of delete key " + prevKeyValue.getKey().toString());
+    System.out.println("start of delete key " + kvPair.getKey().toString());
 
     System.out.println("deleting record: " + keyObjects.get(1).toString());
 
@@ -325,19 +325,19 @@ public class Cursor {
     {
       FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, kvPair.getKey());
       // System.out.println("adding attr: " + keyObjects.get(2).toString());
-      if (!iterator.hasNext())
+      if (!copyIterator.hasNext())
       {
         System.out.println("reached EOF");
         eof = true;
         return StatusCode.SUCCESS;
       }
-      currentKeyValue = iterator.next();
-      kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
+      //currentKeyValue = iterator.next();
+      kvPair = convertKeyValueToFDBKVPair(copyIterator.next());
       keyObjects = kvPair.getKey().getItems();
     }
     // set to next key
 
-    currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
+    //currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
 
     return StatusCode.SUCCESS;
   }
