@@ -161,7 +161,7 @@ public class Cursor {
       currentRecord = newRecord;
       // set to next key
 
-      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
+      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(0);
 
       for (Map.Entry e : rec.getMapAttrNameToValue().entrySet())
       {
