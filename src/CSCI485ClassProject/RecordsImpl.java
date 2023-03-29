@@ -58,9 +58,15 @@ public class RecordsImpl implements Records{
 
     if (attrNames.length > attrMap.keySet().size())
     {
+      System.out.println("entered adding attributes");
       Set<String> addedAttrSet = new HashSet<>(Arrays.asList(attrNames));
       // add attributes that don't exist
       addedAttrSet.removeAll(attrMap.keySet());
+      for (String s : addedAttrSet)
+      {
+        System.out.println(" to b added: " + s);
+      }
+
       // need index of values to type check
       for (int i = 0; i < attrValues.length; i++)
       {
