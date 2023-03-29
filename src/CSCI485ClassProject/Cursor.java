@@ -32,7 +32,9 @@ public class Cursor {
 
   private int count;
 
-  private Object currentRecord;
+  private KeyValue currentKeyValue;
+
+  private Object currentPrimaryValue;
   private AsyncIterable<KeyValue> iterable;
   private AsyncIterator<KeyValue> iterator;
   private boolean goingForward;
@@ -61,9 +63,9 @@ public class Cursor {
     this.iterable = cursorTx.getRange(recordsSubspace.range());
     this.iterator = iterable.iterator();
 
-    FDBKVPair kvPair = convertKeyValueToFDBKVPair(iterator.next());
-
-    currentRecord = kvPair.getKey().getItems().get(0);
+    currentKeyValue = iterator.next();
+    currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(0);
+    System.out.println("First record value: " + currentPrimaryValue.toString());
 
     count = 0;
 
@@ -117,18 +119,19 @@ public class Cursor {
     // get all the keyValues that start with same primary value
     Record rec = new Record();
 
-    KeyValue keyValue = iterator.next();
-    FDBKVPair kvPair = convertKeyValueToFDBKVPair(keyValue);
+    FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
 
     List<Object> keyObjects = kvPair.getKey().getItems();
 
-    while (keyObjects.get(0).equals(currentRecord))
+    while (keyObjects.get(0).equals(currentPrimaryValue))
     {
       System.out.println("Adding attr: " + keyObjects.get(1).toString());
 
       rec.setAttrNameAndValue(keyObjects.get(1).toString(), kvPair.getValue().toString());
-      keyValue = iterator.next();
-      keyObjects = convertKeyValueToFDBKVPair(keyValue).getKey().getItems();
+
+      currentKeyValue = iterator.next();
+      kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
+      keyObjects = kvPair.getKey().getItems();
     }
 
 
