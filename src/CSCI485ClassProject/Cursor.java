@@ -144,6 +144,7 @@ public class Cursor {
         if (!iterator.hasNext())
         {
           System.out.println("reached EOF");
+          currentRecord = newRecord;
           eof = true;
           return rec;
         }
@@ -152,6 +153,7 @@ public class Cursor {
         kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
         keyObjects = kvPair.getKey().getItems();
       }
+      currentRecord = newRecord;
       // set to next key
 
       currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
