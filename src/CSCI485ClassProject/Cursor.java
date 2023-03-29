@@ -61,6 +61,10 @@ public class Cursor {
     this.iterable = cursorTx.getRange(recordsSubspace.range());
     this.iterator = iterable.iterator();
 
+    FDBKVPair kvPair = convertKeyValueToFDBKVPair(iterator.next());
+
+    currentRecord = kvPair.getKey().getItems().get(0);
+
     count = 0;
 
     System.out.println("Successfully made cursor");
@@ -115,11 +119,14 @@ public class Cursor {
 
     KeyValue keyValue = iterator.next();
     FDBKVPair kvPair = convertKeyValueToFDBKVPair(keyValue);
+
     List<Object> keyObjects = kvPair.getKey().getItems();
 
     while (keyObjects.get(0).equals(currentRecord))
     {
       rec.setAttrNameAndValue(keyObjects.get(1).toString(), kvPair.getValue().toString());
+      keyValue = iterator.next();
+      keyObjects = convertKeyValueToFDBKVPair(keyValue).getKey().getItems();
     }
 
 
