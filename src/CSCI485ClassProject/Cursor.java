@@ -50,6 +50,8 @@ public class Cursor {
   private Object prevPrimaryValue;
   private KeyValue currentKeyValue;
   private Object currentPrimaryValue;
+
+  private List<FDBKVPair> currentRecord;
   private ComparisonOperator operator;
   private AsyncIterable<KeyValue> iterable;
   private AsyncIterator<KeyValue> iterator;
@@ -129,10 +131,14 @@ public class Cursor {
       prevKeyValue = currentKeyValue;
       prevPrimaryValue = kvPair.getKey().get(1);
 
+      List<FDBKVPair> newRecord = new ArrayList<>();
+
       System.out.println("making record: " + keyObjects.get(1).toString());
 
       while (keyObjects.get(1).equals(currentPrimaryValue))
       {
+        newRecord.add(kvPair);
+
         rec.setAttrNameAndValue((String) keyObjects.get(2), kvPair.getValue().get(0));
         // System.out.println("adding attr: " + keyObjects.get(2).toString());
         if (!iterator.hasNext())
@@ -299,41 +305,9 @@ public class Cursor {
 
   public StatusCode deleteRecord()
   {
-    FDBKVPair kvPair = convertKeyValueToFDBKVPair(prevKeyValue);
-    // first object is table key, second is primaryKeyValue, third is attribute name
-    List<Object> keyObjects = kvPair.getKey().getItems();
-
-    AsyncIterable<KeyValue> iterable1 = cursorTx.getRange(recordsSubspace.range(), ROW_LIMIT_UNLIMITED, !goingForward);
-    AsyncIterator<KeyValue> copyIterator = iterable1.iterator();
-
-    FDBKVPair p = convertKeyValueToFDBKVPair(copyIterator.next());
-    while(!p.equals(prevKeyValue))
+    for (FDBKVPair p : currentRecord)
     {
-      if (copyIterator.hasNext())
-        convertKeyValueToFDBKVPair(copyIterator.next());
-      else
-        break;
-    }
-
-    // KeyValue kv = copyIterator.next();
-    System.out.println("copy kv: " + p.getKey().toString());
-    System.out.println("start of delete key " + kvPair.getKey().toString());
-
-    System.out.println("deleting record: " + keyObjects.get(1).toString());
-
-    while (keyObjects.get(1).equals(prevPrimaryValue))
-    {
-      FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, kvPair.getKey());
-      // System.out.println("adding attr: " + keyObjects.get(2).toString());
-      if (!copyIterator.hasNext())
-      {
-        System.out.println("reached EOF");
-        eof = true;
-        return StatusCode.SUCCESS;
-      }
-      //currentKeyValue = iterator.next();
-      kvPair = convertKeyValueToFDBKVPair(copyIterator.next());
-      keyObjects = kvPair.getKey().getItems();
+      FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, p.getKey());
     }
     // set to next key
 
