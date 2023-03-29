@@ -15,9 +15,7 @@ import com.apple.foundationdb.tuple.ByteArrayUtil;
 
 
 import java.sql.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.apple.foundationdb.ReadTransaction.ROW_LIMIT_UNLIMITED;
 
@@ -25,6 +23,14 @@ public class Cursor {
   public enum Mode {
     READ,
     READ_WRITE
+  }
+
+  public static Set<ComparisonOperator> equalToOperators = new HashSet<>();
+
+  static {
+    equalToOperators.add(ComparisonOperator.EQUAL_TO);
+    equalToOperators.add(ComparisonOperator.GREATER_THAN_OR_EQUAL_TO);
+    equalToOperators.add(ComparisonOperator.LESS_THAN_OR_EQUAL_TO);
   }
   private Database db;
   private DirectorySubspace recordsSubspace;
@@ -97,11 +103,10 @@ public class Cursor {
 
   public Record goToFirst()
   {
-    System.out.println("starting go to first");
     goingForward = true;
     initializeIterable();
     // get all the keyValues that start with same primary value
-    return makeRecordFromCurrentKey();
+    return getNext();
   }
 
   private Record makeRecordFromCurrentKey()
@@ -140,12 +145,11 @@ public class Cursor {
     return null;
   }
 
-
   public Record goToLast()
   {
     goingForward = false;
     initializeIterable();
-    return makeRecordFromCurrentKey();
+    return getNext();
   }
 
   public Record getPrev()
@@ -159,53 +163,91 @@ public class Cursor {
 
     if (operator != null)
     {
-      if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO)
-      {
-        System.out.println("comparing greater or equal to");
-        // get type of butt crack
-        AttributeType attrType =  res.getTypeForGivenAttrName(attrToParse);
-        if (attrType == AttributeType.INT)
-        {
-          if (Integer.valueOf(res.getValueForGivenAttrName(attrToParse).toString()) >= Integer.valueOf(threshold.toString())) {
-            return res;
-          }
-        }
-        else if (attrType == AttributeType.DOUBLE)
-        {
-          if (Double.valueOf(res.getValueForGivenAttrName(attrToParse).toString()) >= Double.valueOf(threshold.toString())) {
-            return res;
-          }
-        }
-        else{
-          if (res.getValueForGivenAttrName(attrToParse).toString().compareTo(threshold.toString()) > 0)
-          {
-            return res;
-          }
-        }
-      }
-      else if (operator == ComparisonOperator.GREATER_THAN)
-      {
+      if (satisfiesOperator(res))
+        return res;
 
-      }
-      else if (operator == ComparisonOperator.EQUAL_TO)
-      {
-
-      }
-      else if (operator == ComparisonOperator.LESS_THAN)
-      {
-
-      }
-      else if (operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
-      {
-
-      }
+      return getNext();
     }
     else {
       return res;
     }
 
-    return getNext();
   }
+
+  private boolean satisfiesOperator(Record res)
+  {
+    AttributeType attrType =  res.getTypeForGivenAttrName(attrToParse);
+
+    //compare ints
+    if (attrType == AttributeType.INT)
+    {
+      System.out.println("Entered int block");
+      Integer recordValue = Integer.valueOf(res.getValueForGivenAttrName(attrToParse).toString());
+      Integer thresholdInt = Integer.valueOf(threshold.toString());
+
+      if (recordValue > thresholdInt) {
+        if (operator == ComparisonOperator.GREATER_THAN)
+          return true;
+      }
+      else if (recordValue == thresholdInt)
+      {
+        if (equalToOperators.contains(operator))
+          return true;
+      }
+      else
+      {
+        if (operator == ComparisonOperator.LESS_THAN)
+          return true;
+      }
+    }
+    // compare doubles
+    else if (attrType == AttributeType.DOUBLE)
+    {
+      System.out.println("Entered double block");
+      Double recordValue = Double.valueOf(res.getValueForGivenAttrName(attrToParse).toString());
+      Double thresholdDouble = Double.valueOf(threshold.toString());
+
+      if (recordValue > thresholdDouble) {
+        if (operator == ComparisonOperator.GREATER_THAN)
+          return true;
+      }
+      else if (recordValue == thresholdDouble)
+      {
+        if (equalToOperators.contains(operator))
+          return true;
+      }
+      else
+      {
+        if (operator == ComparisonOperator.LESS_THAN)
+          return true;
+      }
+    }
+    // compare strings
+    else {
+      System.out.println("Entered string block");
+
+      String recordValue = res.getValueForGivenAttrName(attrToParse).toString();
+      String thresholdStr = threshold.toString();
+
+      if (recordValue.compareTo(thresholdStr) > 0 ) {
+        if (operator == ComparisonOperator.GREATER_THAN)
+          return true;
+      }
+      else if (recordValue == thresholdStr)
+      {
+        if (equalToOperators.contains(operator))
+          return true;
+      }
+      else
+      {
+        if (operator == ComparisonOperator.LESS_THAN)
+          return true;
+      }
+    }
+
+      return false;
+  }
+
 
   public StatusCode commit()
   {
