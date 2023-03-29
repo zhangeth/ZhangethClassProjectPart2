@@ -356,10 +356,6 @@ public class Cursor {
   {
     Tuple keyTuple = Tuple.fromBytes(kv.getKey());
     Tuple valueTuple = Tuple.fromBytes(kv.getValue());
-    if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordsSubspace, cursorTx, keyTuple, recordsPath) == null)
-    {
-      return null;
-    }
 
     return new FDBKVPair(recordsPath, keyTuple, valueTuple);
   }
