@@ -78,6 +78,7 @@ public class RecordsImpl implements Records{
         {
           tbManager.addAttribute(tableName, attrNames[i], RecordsHelper.getType(attrValues[i]));
           System.out.println("Added attribute: " + attrNames[i]);
+          System.out.println("type of added attr: " + RecordsHelper.getType(attrValues[i]).toString());
         }
       }
     }
@@ -153,33 +154,7 @@ public class RecordsImpl implements Records{
     FDBHelper.commitTransaction(createTX);
 
     createTX.close();
-    //ts.close();
-    // print existing records
 
-    /*Transaction readTx = db.createTransaction();
-    System.out.println(("before print"));
-    try {
-      List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTx, recordsPath);
-      for (FDBKVPair p : pairs)
-      {
-        System.out.println("Printing new pair");
-
-        for (Object o : p.getKey().getItems())
-        {
-          System.out.println("key obj: " + o.toString());
-        }
-
-        for (Object o : p.getValue().getItems()){
-          System.out.print("obj: " + o);
-        }
-        System.out.println();
-      }
-    }  catch (Exception e) {
-      System.out.println(e);
-    }
-    System.out.println(("after print"));
-
-    readTx.close();*/
 
     return StatusCode.SUCCESS;
   }
