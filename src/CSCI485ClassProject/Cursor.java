@@ -138,14 +138,7 @@ public class Cursor {
 
   public Record getPrev()
   {
-    if (iterator.hasNext())
-    {
-      //setCurrentRecord();
-      //return convertFDBKVPairToRecord(convertKeyValueToFD BKVPair(kv));
-    }
-    // return EOF
-    System.out.println("cursor reached EOF");
-    return null;
+    return makeRecordFromCurrentKey();
   }
 
   public Record getNext()
