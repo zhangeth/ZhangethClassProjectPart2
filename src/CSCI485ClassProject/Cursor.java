@@ -38,6 +38,7 @@ public class Cursor {
   private AsyncIterable<KeyValue> iterable;
   private AsyncIterator<KeyValue> iterator;
   private boolean goingForward;
+  private boolean eof = false;
 
   // your code here cursor table it's bound to, starting point, current point
   // constructor
@@ -90,34 +91,40 @@ public class Cursor {
 
   private Record makeRecordFromCurrentKey()
   {
-
-    Record rec = new Record();
-    FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
-
-    // first object is table key, second is primaryKeyValue, third is attribute name
-    List<Object> keyObjects = kvPair.getKey().getItems();
-
-    System.out.println("makin record: " + keyObjects.get(1).toString());
-
-    while (keyObjects.get(1).equals(currentPrimaryValue))
+    if (!eof)
     {
-      //System.out.println("Adding attr: " + keyObjects.get(2).toString());
+      Record rec = new Record();
+      FDBKVPair kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
 
-      rec.setAttrNameAndValue((String) keyObjects.get(2), kvPair.getValue().get(0));
+      // first object is table key, second is primaryKeyValue, third is attribute name
+      List<Object> keyObjects = kvPair.getKey().getItems();
 
-      if (!iterator.hasNext())
+      System.out.println("makin record: " + keyObjects.get(1).toString());
+
+      boolean eof = false;
+
+      while (keyObjects.get(1).equals(currentPrimaryValue))
       {
-        System.out.println("reached EOF");
-        return null;
+        rec.setAttrNameAndValue((String) keyObjects.get(2), kvPair.getValue().get(0));
+
+        if (!iterator.hasNext())
+        {
+          System.out.println("reached EOF");
+          eof = true;
+          return rec;
+        }
+        currentKeyValue = iterator.next();
+        kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
+        keyObjects = kvPair.getKey().getItems();
       }
-      currentKeyValue = iterator.next();
-      kvPair = convertKeyValueToFDBKVPair(currentKeyValue);
-      keyObjects = kvPair.getKey().getItems();
+      // set to next key
+
+      currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
+
+      return rec;
     }
 
-    currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
-
-    return rec;
+    return null;
   }
 
 
