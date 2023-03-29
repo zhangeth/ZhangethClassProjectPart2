@@ -1,5 +1,6 @@
 package CSCI485ClassProject;
 
+import CSCI485ClassProject.models.AttributeType;
 import CSCI485ClassProject.models.ComparisonOperator;
 import CSCI485ClassProject.models.Record;
 import CSCI485ClassProject.models.TableMetadata;
@@ -160,13 +161,38 @@ public class Cursor {
     {
       if (operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO)
       {
+        System.out.println("comparing greater or equal to");
         // get type of butt crack
-      /*  res.getTypeForGivenAttrName(attrN)
-        if (res.getValueForGivenAttrName(attrToParse) >= Integer.valueOf(threshold.toString()))
-        ;*/
+        AttributeType attrType =  res.getTypeForGivenAttrName(attrToParse);
+        if (attrType == AttributeType.INT)
+        {
+          if (Integer.valueOf(res.getValueForGivenAttrName(attrToParse).toString()) >= Integer.valueOf(threshold.toString())) {
+            return res;
+          }
+        }
+        else if (attrType == AttributeType.DOUBLE)
+        {
+          if (Double.valueOf(res.getValueForGivenAttrName(attrToParse).toString()) >= Double.valueOf(threshold.toString())) {
+            return res;
+          }
+        }
+        else{
+          if (res.getValueForGivenAttrName(attrToParse).toString().compareTo(threshold.toString()) > 0)
+          {
+            return res;
+          }
+        }
+      }
+      else if (operator == ComparisonOperator.GREATER_THAN)
+      {
+
       }
     }
-    return makeRecordFromCurrentKey();
+    else {
+      return res;
+    }
+
+    return getNext();
   }
 
   public StatusCode commit()
