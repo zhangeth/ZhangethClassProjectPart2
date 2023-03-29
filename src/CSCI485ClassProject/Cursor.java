@@ -107,6 +107,8 @@ public class Cursor {
       keyObjects = kvPair.getKey().getItems();
     }
 
+    currentPrimaryValue = convertKeyValueToFDBKVPair(currentKeyValue).getKey().get(1);
+
     return rec;
   }
 
