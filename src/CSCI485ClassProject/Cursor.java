@@ -107,7 +107,7 @@ public class Cursor {
       while (keyObjects.get(1).equals(currentPrimaryValue))
       {
         rec.setAttrNameAndValue((String) keyObjects.get(2), kvPair.getValue().get(0));
-        System.out.println("adding attr: " + keyObjects.get(2).toString());
+        // System.out.println("adding attr: " + keyObjects.get(2).toString());
         if (!iterator.hasNext())
         {
           System.out.println("reached EOF");

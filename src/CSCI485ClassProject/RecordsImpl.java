@@ -70,7 +70,7 @@ public class RecordsImpl implements Records{
         }
       }
     }
-
+    tbm = RecordsHelper.convertNameToTableMetaData(db, tx, tableName);
     attrMap = tbm.getAttributes();
 
     for (int i = 0; i < attrNames.length; i++)
