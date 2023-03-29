@@ -177,8 +177,14 @@ public class Cursor {
 
   private boolean satisfiesOperator(Record res)
   {
+    // check record has entry for given attr
+    if (!res.getMapAttrNameToValue().containsKey(attrToParse))
+    {
+      return false;
+    }
+
     AttributeType attrType =  res.getTypeForGivenAttrName(attrToParse);
-    attrType = RecordsHelper.getType(threshold);
+    //attrType = RecordsHelper.getType(threshold);
 
     System.out.println("attrParse: " + attrToParse);
     System.out.println("type of attrPars: " + attrType.toString());
@@ -191,17 +197,23 @@ public class Cursor {
 
       if (recordValue > thresholdInt) {
         if (operator == ComparisonOperator.GREATER_THAN)
+        {
           return true;
+        }
       }
       else if (recordValue == thresholdInt)
       {
         if (equalToOperators.contains(operator))
+        {
           return true;
+        }
       }
       else
       {
         if (operator == ComparisonOperator.LESS_THAN)
+        {
           return true;
+        }
       }
     }
     // compare doubles
