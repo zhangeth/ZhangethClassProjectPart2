@@ -187,6 +187,18 @@ public class Cursor {
       {
 
       }
+      else if (operator == ComparisonOperator.EQUAL_TO)
+      {
+
+      }
+      else if (operator == ComparisonOperator.LESS_THAN)
+      {
+
+      }
+      else if (operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
+      {
+
+      }
     }
     else {
       return res;

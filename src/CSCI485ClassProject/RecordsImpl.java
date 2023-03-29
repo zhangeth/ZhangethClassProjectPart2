@@ -187,11 +187,13 @@ public class RecordsImpl implements Records{
   @Override
   public Cursor openCursor(String tableName, String attrName, Object attrValue, ComparisonOperator operator, Cursor.Mode mode, boolean isUsingIndex) {
     // make transaction that opens the correct table
-    Transaction tx = FDBHelper.openTransaction(db);
-    // find table
-
-    // FDBHelper.getAllDirectSubspaceName()
-    return null;
+    if (!RecordsHelper.doesTableExists(db, tableName))
+    {
+      System.out.println("table doesn't exist");
+      return null;
+    }
+    // make cursor
+    return new Cursor(tableName, attrName, attrValue, operator, mode, isUsingIndex, db);
   }
 
   // structure of record:  public HashMap<String, Value> getMapAttrNameToValue() {
