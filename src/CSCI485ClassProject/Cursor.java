@@ -178,6 +178,8 @@ public class Cursor {
   private boolean satisfiesOperator(Record res)
   {
     AttributeType attrType =  res.getTypeForGivenAttrName(attrToParse);
+    attrType = RecordsHelper.getType(threshold);
+
     System.out.println("attrParse: " + attrToParse);
     System.out.println("type of attrPars: " + attrType.toString());
     //compare ints
