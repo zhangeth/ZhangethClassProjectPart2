@@ -119,7 +119,7 @@ public class Cursor {
       // first object is table key, second is primaryKeyValue, third is attribute name
       List<Object> keyObjects = kvPair.getKey().getItems();
 
-      System.out.println("makin record: " + keyObjects.get(1).toString());
+      System.out.println("making record: " + keyObjects.get(1).toString());
 
       while (keyObjects.get(1).equals(currentPrimaryValue))
       {
@@ -165,7 +165,12 @@ public class Cursor {
     {
       //System.out.println(res.getMapAttrNameToValue().toString());
       if (satisfiesOperator(res))
+      {
+        System.out.print("returning: " + res.getValueForGivenAttrName("SSN"));
+        System.out.println();
         return res;
+      }
+
 
       if (eof)
       {
@@ -203,6 +208,7 @@ public class Cursor {
       if (recordValue > thresholdInt) {
         if (operator == ComparisonOperator.GREATER_THAN)
         {
+          System.out.println("returning true");
           return true;
         }
       }
