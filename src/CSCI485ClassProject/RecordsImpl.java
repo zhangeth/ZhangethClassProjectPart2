@@ -58,7 +58,7 @@ public class RecordsImpl implements Records{
     System.out.println("length of names: " + attrNames.length);
     System.out.println("length of map: " + attrMap.keySet().size());
 
-    if (attrNames.length > attrMap.keySet().size())
+    if (attrNames.length > (attrMap.keySet().size() - tbm.getPrimaryKeys().size()))
     {
       System.out.println("entered adding attributes");
       Set<String> addedAttrSet = new HashSet<>(Arrays.asList(attrNames));
