@@ -312,6 +312,7 @@ public class Cursor {
       System.out.println("deleting: " + currentRecord.get(0).getKey().get(1).toString());
       for (FDBKVPair p : currentRecord)
       {
+        System.out.println("deleting attr: " + p.getKey().get(2).toString());
         FDBHelper.removeKeyValuePair(cursorTx, recordsSubspace, p.getKey());
       }
 
