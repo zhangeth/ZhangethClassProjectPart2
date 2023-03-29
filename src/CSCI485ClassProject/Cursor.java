@@ -167,6 +167,11 @@ public class Cursor {
       if (satisfiesOperator(res))
         return res;
 
+      if (eof)
+      {
+        return null;
+      }
+
       return getNext();
     }
     else {
