@@ -90,7 +90,7 @@ public class RecordsImpl implements Records{
     for (int i = 0; i < attrNames.length; i++)
     {
       AttributeType attrType = attrMap.get(attrNames[i]);
-      if ((!addedAttrSet.contains(attrNames[i])) ||
+      if ((!addedAttrSet.contains(attrNames[i])) &&
               (!(attrType == AttributeType.INT && (attrValues[i] instanceof Integer || attrValues[i] instanceof Long)) &&
               !(attrType == AttributeType.VARCHAR && attrValues[i] instanceof String) &&
               !(attrType == AttributeType.DOUBLE && (attrValues[i] instanceof Double)))
