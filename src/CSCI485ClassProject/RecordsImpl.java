@@ -95,33 +95,47 @@ public class RecordsImpl implements Records{
 
     DirectorySubspace recordSubspace = DirectoryLayer.getDefault().createOrOpen(createTX, recordsPath).join();
 
-    // make key Tuple
-    Tuple keyTuple = new Tuple().addAll(Arrays.asList(primaryKeysValues));
+    // make key and value tuple for each attribute, with each key having the value of the primary key first
+    Object primaryValue = primaryKeysValues[0];
+    for (int i = 0; i < attrNames.length; i++)
+    {
+      Tuple keyTuple = new Tuple().addObject(primaryValue);
+      keyTuple = keyTuple.addObject(attrNames[i]);
 
-    // make value Tuple
-    Tuple valueTuple = new Tuple().addAll(Arrays.asList(attrValues));
+      // make value Tuple
+      Tuple valueTuple = new Tuple().addObject(attrValues[i]);
+
+      // set key and value tuples
+      if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordSubspace, createTX, keyTuple, recordsPath) == null)
+      {
+        FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, keyTuple, valueTuple));
+
+        FDBHelper.commitTransaction(createTX);
+      }
+    }
+
 
     // commit key and value tuples to db
     // check if key exists
-    if (FDBHelper.getCertainKeyValuePairInSubdirectory(recordSubspace, createTX, keyTuple, recordsPath) == null)
-    {
-      FDBHelper.setFDBKVPair(recordSubspace, createTX, new FDBKVPair(recordsPath, keyTuple, valueTuple));
 
-      FDBHelper.commitTransaction(createTX);
-      // int counter = ;
-    }
 
     createTX.close();
     //ts.close();
     // print existing records
 
-/*   Transaction readTx = db.createTransaction();
+    Transaction readTx = db.createTransaction();
     System.out.println(("before print"));
     try {
       List<FDBKVPair> pairs = FDBHelper.getAllKeyValuePairsOfSubdirectory(db, readTx, recordsPath);
       for (FDBKVPair p : pairs)
       {
-        System.out.println("added pair: " + p.getKey().toString());
+        System.out.println("Printing new pair");
+
+        for (Object o : p.getKey().getItems())
+        {
+          System.out.println("key obj: " + o.toString());
+        }
+
         for (Object o : p.getValue().getItems()){
           System.out.print("obj: " + o);
         }
@@ -132,7 +146,7 @@ public class RecordsImpl implements Records{
     }
     System.out.println(("after print"));
 
-    readTx.close();*/
+    readTx.close();
 
     return StatusCode.SUCCESS;
   }
