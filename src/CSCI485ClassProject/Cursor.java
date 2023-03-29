@@ -12,6 +12,7 @@ import com.apple.foundationdb.async.AsyncIterator;
 import com.apple.foundationdb.directory.DirectorySubspace;
 import com.apple.foundationdb.tuple.Tuple;
 import com.apple.foundationdb.tuple.ByteArrayUtil;
+import jdk.internal.dynalink.linker.ConversionComparator;
 
 
 import java.sql.Array;
@@ -205,8 +206,11 @@ public class Cursor {
       Integer recordValue = Integer.valueOf(res.getValueForGivenAttrName(attrToParse).toString());
       Integer thresholdInt = Integer.valueOf(threshold.toString());
 
+      System.out.println("recordVal: " + recordValue + " threshold: " + thresholdInt);
+
       if (recordValue > thresholdInt) {
-        if (operator == ComparisonOperator.GREATER_THAN)
+        System.out.println("greater than");
+        if (operator == ComparisonOperator.GREATER_THAN || operator == ComparisonOperator.GREATER_THAN_OR_EQUAL_TO)
         {
           System.out.println("returning true");
           return true;
@@ -214,6 +218,7 @@ public class Cursor {
       }
       else if (recordValue == thresholdInt)
       {
+        System.out.println("greater than");
         if (equalToOperators.contains(operator))
         {
           return true;
@@ -221,7 +226,8 @@ public class Cursor {
       }
       else
       {
-        if (operator == ComparisonOperator.LESS_THAN)
+        System.out.println("greater than");
+        if (operator == ComparisonOperator.LESS_THAN || operator == ComparisonOperator.LESS_THAN_OR_EQUAL_TO)
         {
           return true;
         }
